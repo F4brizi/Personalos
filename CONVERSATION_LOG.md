@@ -155,3 +155,18 @@
      - CompilaciÃ³n limpia con `npm run build` en 2.48s.
      - Despliegue automÃ¡tico y verificado en `http://localhost:3000`.
 
+
+---
+
+## 8. Sesión 05: Refactor Visual - Tactical Engineering (06/09/2026)
+- **Objetivo:** Aplicar un *Design System* inspirado en "Tactical Engineering & Sober Sci-Fi" al Hub, Dashboard y toda la interfaz web, priorizando la neutralidad, legibilidad técnica y sobriedad (estilo Vercel, Linear, Supabase).
+- **Acciones Realizadas:**
+  1. Refactor completo de hojas de estilo y clases Tailwind sin modificar lógica:
+     - Paleta base de tonos zinc-950, zinc-900 para fondos y zinc-800 para bordes.
+     - Tipografía de métricas, contadores y tags adaptada a ont-mono en mayúsculas.
+     - Eliminación de púrpuras/indigos. Elementos interactivos en zinc-100/zinc-300, estado crítico con opacidades reducidas (green-400, mber-400, ed-400).
+     - Reemplazo de sombras (glows) y bordes gruesos por líneas crudas de 1px.
+     - Radios de borde rígidos (ounded-md y ounded-sm).
+  2. Componentes intervenidos: index.css, App.tsx, Navbar.tsx, HubView.tsx, DashboardView.tsx, ReconciliationTable.tsx y PomodoroView.tsx.
+  3. Validación y Build exitoso (React 19 + Vite).
+

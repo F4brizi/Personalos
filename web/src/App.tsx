@@ -56,7 +56,7 @@ export function App() {
   const pendingCount = transactions.filter((t) => !t.is_reconciled).length;
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-white">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-zinc-800 selection:text-white">
       <Navbar
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
@@ -66,9 +66,9 @@ export function App() {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
-          <div className="h-96 flex flex-col items-center justify-center gap-3 text-slate-400">
-            <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-            <span className="text-xs">Cargando datos del Hub de Personal OS...</span>
+          <div className="h-96 flex flex-col items-center justify-center gap-4 text-zinc-500">
+            <Loader2 className="w-8 h-8 animate-spin text-zinc-400" />
+            <span className="text-xs font-mono uppercase tracking-widest text-zinc-400">Iniciando sistemas OS...</span>
           </div>
         ) : (
           <>
@@ -108,8 +108,8 @@ export function App() {
         )}
       </main>
 
-      <footer className="border-t border-slate-900 bg-slate-950/40 py-4 text-center text-xs text-slate-600">
-        Personal OS · Command Center & Launcher de Ecosistema · React 19 & Tailwind CSS
+      <footer className="border-t border-zinc-900 bg-zinc-950 py-4 text-center text-[10px] font-mono text-zinc-600 uppercase tracking-widest">
+        Personal OS // Tactical Command Center // React 19
       </footer>
     </div>
   );

@@ -46,7 +46,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     internalTab: 'reconciliation',
     tags: ['Finanzas', 'Mercado Pago', 'FastAPI'],
     icon: 'Receipt',
-    gradient: 'from-emerald-500 to-teal-600',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
   {
     id: 'pomodoro-focus',
@@ -58,7 +58,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     internalTab: 'pomodoro',
     tags: ['Productividad', 'Postgres', 'Focus'],
     icon: 'Timer',
-    gradient: 'from-purple-500 to-indigo-600',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
   {
     id: 'realtime-map',
@@ -70,7 +70,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     url: 'http://localhost:3001',
     tags: ['GIS', 'Leaflet', 'WebSockets', 'Real-Time'],
     icon: 'Map',
-    gradient: 'from-sky-500 to-blue-600',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
   {
     id: 'datalab-analytics',
@@ -82,7 +82,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     url: 'http://localhost:8501',
     tags: ['Python', 'Polars', 'Dashboards', 'DuckDB'],
     icon: 'BarChart3',
-    gradient: 'from-amber-500 to-orange-600',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
   {
     id: 'enterprise-os',
@@ -94,7 +94,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     url: '#',
     tags: ['CRM/ERP', 'Operaciones', 'Empresas'],
     icon: 'Building2',
-    gradient: 'from-violet-500 to-purple-700',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
   {
     id: 'fastapi-backend',
@@ -106,7 +106,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     url: 'http://localhost:8000/docs',
     tags: ['Swagger', 'FastAPI', 'Python 3.12'],
     icon: 'Terminal',
-    gradient: 'from-cyan-500 to-blue-700',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
   {
     id: 'docker-infrastructure',
@@ -118,7 +118,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     url: '#docker-status',
     tags: ['Docker Compose', 'PostgreSQL', 'Redis'],
     icon: 'Server',
-    gradient: 'from-blue-600 to-indigo-800',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
   {
     id: 'cloud-console',
@@ -130,7 +130,7 @@ const DEFAULT_APPS: EcosystemApp[] = [
     url: 'https://github.com',
     tags: ['Cloud', 'DevOps', 'Deploy'],
     icon: 'Globe',
-    gradient: 'from-rose-500 to-pink-600',
+    gradient: 'from-zinc-800 to-zinc-700',
   },
 ];
 
@@ -172,14 +172,6 @@ export const HubView: React.FC<HubViewProps> = ({
     e.preventDefault();
     if (!formName) return;
 
-    const gradients = {
-      personal: 'from-emerald-500 to-teal-600',
-      business: 'from-violet-500 to-purple-700',
-      data: 'from-sky-500 to-blue-600',
-      infra: 'from-cyan-500 to-indigo-700',
-      external: 'from-rose-500 to-pink-600',
-    };
-
     const newApp: EcosystemApp = {
       id: `custom-${Date.now()}`,
       name: formName,
@@ -190,7 +182,7 @@ export const HubView: React.FC<HubViewProps> = ({
       url: formUrl || '#',
       tags: formTags ? formTags.split(',').map((t) => t.trim()) : ['Custom'],
       icon: formCategory === 'data' ? 'BarChart3' : formCategory === 'infra' ? 'Server' : formCategory === 'business' ? 'Building2' : 'Globe',
-      gradient: gradients[formCategory] || 'from-indigo-500 to-purple-600',
+      gradient: 'from-zinc-800 to-zinc-700',
     };
 
     setApps([newApp, ...apps]);
@@ -216,85 +208,85 @@ export const HubView: React.FC<HubViewProps> = ({
   const renderIcon = (iconName: string) => {
     switch (iconName) {
       case 'Map':
-        return <Map className="w-5 h-5 text-white" />;
+        return <Map className="w-5 h-5 text-zinc-100" />;
       case 'BarChart3':
-        return <BarChart3 className="w-5 h-5 text-white" />;
+        return <BarChart3 className="w-5 h-5 text-zinc-100" />;
       case 'Building2':
-        return <Building2 className="w-5 h-5 text-white" />;
+        return <Building2 className="w-5 h-5 text-zinc-100" />;
       case 'Server':
-        return <Server className="w-5 h-5 text-white" />;
+        return <Server className="w-5 h-5 text-zinc-100" />;
       case 'Terminal':
-        return <Terminal className="w-5 h-5 text-white" />;
+        return <Terminal className="w-5 h-5 text-zinc-100" />;
       case 'Globe':
-        return <Globe className="w-5 h-5 text-white" />;
+        return <Globe className="w-5 h-5 text-zinc-100" />;
       case 'Receipt':
-        return <Receipt className="w-5 h-5 text-white" />;
+        return <Receipt className="w-5 h-5 text-zinc-100" />;
       case 'Timer':
-        return <Timer className="w-5 h-5 text-white" />;
+        return <Timer className="w-5 h-5 text-zinc-100" />;
       default:
-        return <Layers className="w-5 h-5 text-white" />;
+        return <Layers className="w-5 h-5 text-zinc-100" />;
     }
   };
 
   return (
     <div className="space-y-8">
       {/* Hero Header & Global Infrastructure Metrics */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-950 border border-slate-800 p-6 sm:p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-md bg-zinc-900 border border-zinc-800 p-6 sm:p-8">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
-            <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-2">
+            <div className="flex items-center gap-2 text-zinc-400 text-xs font-mono uppercase tracking-widest mb-3">
               <Activity className="w-4 h-4" />
               <span>Infraestructura & Hub Central</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-semibold text-zinc-100 tracking-tight uppercase">
               Command Center
             </h1>
-            <p className="text-sm text-slate-400 max-w-xl mt-1.5 leading-relaxed">
+            <p className="text-sm text-zinc-500 max-w-xl mt-2 leading-relaxed">
               Navega y gestiona tus aplicaciones, módulos en desarrollo, pipelines de datos, mapas en tiempo real y servicios externos desde un único panel centralizado.
             </p>
           </div>
 
           {/* Quick Global Stats Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-white">{apps.length}</div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Servicios</div>
+            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
+              <div className="text-xl font-bold font-mono text-zinc-100">{apps.length}</div>
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">Servicios</div>
             </div>
 
-            <div className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-emerald-400">{onlineCount}</div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Online</div>
+            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
+              <div className="text-xl font-bold font-mono text-green-400">{onlineCount}</div>
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">Online</div>
             </div>
 
-            <div className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-sky-400">{devCount}</div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">En Build</div>
+            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
+              <div className="text-xl font-bold font-mono text-amber-400">{devCount}</div>
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">En Build</div>
             </div>
 
-            <div className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-purple-400">
-                {pomodoroStats?.total_minutes || 0}m
+            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
+              <div className="text-xl font-bold font-mono text-zinc-100">
+                {pomodoroStats?.total_minutes || 0}<span className="text-xs text-zinc-500 ml-0.5">m</span>
               </div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Foco Hoy</div>
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">Foco Hoy</div>
             </div>
           </div>
         </div>
 
         {/* Realtime Status Pill Bar */}
-        <div className="mt-6 pt-5 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div className="mt-8 pt-4 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-4 text-xs font-mono uppercase tracking-wider">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-[11px]">
+            <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm border ${health?.status === 'healthy' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'} text-[10px]`}>
               <ShieldCheck className="w-3.5 h-3.5" />
               {health?.status === 'healthy'
                 ? `DB (${health.services.database.latency_ms}ms) & Redis (${health.services.redis.latency_ms}ms)`
-                : 'Servicios Docker'}
+                : 'Servicios Docker Offline'}
             </span>
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono text-[11px]">
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-zinc-800 text-zinc-300 border border-zinc-700 text-[10px]">
               <Cpu className="w-3.5 h-3.5" />
               Docker Network: Bridge activo
             </span>
-            {summary && (
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono text-[11px]">
+            {summary && summary.pending_reconciliation_count > 0 && (
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px]">
                 <DollarSign className="w-3.5 h-3.5" />
                 {summary.pending_reconciliation_count} movimientos MP por conciliar
               </span>
@@ -303,10 +295,10 @@ export const HubView: React.FC<HubViewProps> = ({
 
           <button
             onClick={() => onNavigateTab('dashboard')}
-            className="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1 group cursor-pointer"
+            className="text-[10px] text-zinc-400 hover:text-zinc-100 flex items-center gap-1 transition-colors"
           >
-            <span>Ver dashboard personal completo</span>
-            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            <span>Ver Dashboard Personal</span>
+            <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
       </div>
@@ -314,7 +306,7 @@ export const HubView: React.FC<HubViewProps> = ({
       {/* Toolbar: Category Filter & Search & Add Button */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Category Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800">
+        <div className="flex flex-wrap items-center gap-1.5 bg-zinc-900 p-1 rounded-md border border-zinc-800 font-mono text-[11px] uppercase tracking-wider">
           {[
             { id: 'all', label: 'Todos' },
             { id: 'personal', label: 'Personal OS' },
@@ -326,10 +318,10 @@ export const HubView: React.FC<HubViewProps> = ({
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-sm transition-colors ${
                 selectedCategory === cat.id
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/25'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  ? 'bg-zinc-100 text-zinc-950 font-bold'
+                  : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800'
               }`}
             >
               {cat.label}
@@ -340,22 +332,22 @@ export const HubView: React.FC<HubViewProps> = ({
         {/* Search & New App Button */}
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Buscar app o servicio..."
+              placeholder="BUSCAR APP..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-48 sm:w-64 transition-all"
+              className="bg-zinc-900 border border-zinc-800 rounded-sm pl-8 pr-3 py-2 text-[11px] font-mono text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-zinc-600 w-48 sm:w-60 transition-colors uppercase tracking-wider"
             />
           </div>
 
           <button
             onClick={() => setIsNewAppModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all shadow-md shadow-indigo-600/20 cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-sm bg-zinc-100 hover:bg-white text-zinc-950 text-[11px] font-mono uppercase tracking-wider font-bold transition-colors shrink-0"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>Agregar App / URL</span>
+            <span>AGREGAR APP</span>
           </button>
         </div>
       </div>
@@ -378,41 +370,36 @@ export const HubView: React.FC<HubViewProps> = ({
             <div
               key={app.id}
               onClick={handleLaunch}
-              className="group bg-slate-900/70 hover:bg-slate-900/90 border border-slate-800/90 hover:border-indigo-500/40 rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/5 cursor-pointer relative overflow-hidden"
+              className="group bg-zinc-900 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-600 rounded-md p-5 flex flex-col justify-between transition-colors cursor-pointer relative"
             >
-              {/* Subtle top glow on hover */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
               <div>
                 {/* Header: Icon + Status badge */}
-                <div className="flex items-start justify-between gap-3 mb-3.5">
-                  <div
-                    className={`h-11 w-11 rounded-xl bg-gradient-to-tr ${app.gradient} flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform`}
-                  >
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-sm bg-zinc-800 flex items-center justify-center border border-zinc-700">
                     {renderIcon(app.icon)}
                   </div>
 
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border font-mono ${
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[9px] font-medium border font-mono uppercase tracking-widest ${
                         app.status === 'online'
-                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                          ? 'bg-green-500/10 text-green-400 border-green-500/20'
                           : app.status === 'development'
-                          ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
+                          ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
                           : app.status === 'external'
-                          ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                          : 'bg-slate-800 text-slate-400 border-slate-700'
+                          ? 'bg-zinc-800 text-zinc-300 border-zinc-700'
+                          : 'bg-zinc-950 text-zinc-500 border-zinc-800'
                       }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
                           app.status === 'online'
-                            ? 'bg-emerald-400 animate-pulse'
+                            ? 'bg-green-400'
                             : app.status === 'development'
-                            ? 'bg-sky-400'
+                            ? 'bg-amber-400'
                             : app.status === 'external'
-                            ? 'bg-rose-400'
-                            : 'bg-slate-400'
+                            ? 'bg-zinc-400'
+                            : 'bg-zinc-600'
                         }`}
                       />
                       {app.statusText}
@@ -421,40 +408,40 @@ export const HubView: React.FC<HubViewProps> = ({
                 </div>
 
                 {/* Title & Description */}
-                <h3 className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-zinc-100 group-hover:text-white transition-colors flex items-center justify-between uppercase tracking-wider">
                   <span>{app.name}</span>
                   {isExternal ? (
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+                    <ExternalLink className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
                   ) : (
-                    <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
                   )}
                 </h3>
 
-                <p className="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-zinc-500 mt-2 line-clamp-2 leading-relaxed font-sans">
                   {app.description}
                 </p>
               </div>
 
               {/* Footer: Tags & Category */}
-              <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between text-[10px]">
+              <div className="mt-5 pt-3 border-t border-zinc-800 flex items-center justify-between text-[10px] font-mono uppercase tracking-wider">
                 <div className="flex flex-wrap gap-1">
                   {app.tags.slice(0, 2).map((t) => (
                     <span
                       key={t}
-                      className="px-1.5 py-0.5 rounded bg-slate-950 text-slate-400 border border-slate-800/80 font-mono"
+                      className="px-1.5 py-0.5 bg-zinc-950 text-zinc-400 border border-zinc-800 rounded-sm"
                     >
                       {t}
                     </span>
                   ))}
                   {app.tags.length > 2 && (
-                    <span className="px-1 py-0.5 text-slate-500 font-mono">
+                    <span className="px-1.5 py-0.5 text-zinc-600">
                       +{app.tags.length - 2}
                     </span>
                   )}
                 </div>
 
-                <span className="text-indigo-400 font-semibold group-hover:translate-x-0.5 transition-transform">
-                  {isInternal ? 'Abrir Módulo →' : isExternal ? 'Abrir Link ↗' : 'Detalles →'}
+                <span className="text-zinc-400 font-bold group-hover:text-zinc-100 transition-colors">
+                  {isInternal ? 'ABRIR →' : isExternal ? 'LINK ↗' : 'INFO →'}
                 </span>
               </div>
             </div>
@@ -464,115 +451,115 @@ export const HubView: React.FC<HubViewProps> = ({
 
       {/* Modal: Registrar Nuevo Servicio */}
       {isNewAppModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-md max-w-lg w-full p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <Plus className="w-5 h-5 text-indigo-400" />
-                Registrar Nuevo Servicio o Aplicación
+              <h2 className="text-sm font-semibold text-zinc-100 flex items-center gap-2 font-mono uppercase tracking-wider">
+                <Plus className="w-4 h-4 text-zinc-400" />
+                Registrar Nuevo Servicio
               </h2>
               <button
                 onClick={() => setIsNewAppModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+                className="text-zinc-500 hover:text-zinc-200 p-1 rounded-sm hover:bg-zinc-800 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-400">
-              Agrega una aplicación independiente, un microservicio local (ej. mapa en tiempo real, herramienta de datos) o una URL externa para tenerla siempre a mano.
+            <p className="text-xs text-zinc-500">
+              Agrega una aplicación independiente, un microservicio local o una URL externa al Hub Central.
             </p>
 
-            <form onSubmit={handleAddApp} className="space-y-3.5">
+            <form onSubmit={handleAddApp} className="space-y-4">
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">Nombre del Servicio / App</label>
+                <label className="block text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">Nombre de la App / Servicio</label>
                 <input
                   type="text"
                   required
-                  placeholder="ej. Mapa Flota GPS, Notebook de Ventas, Grafana"
+                  placeholder="Ej. Mapa Flota GPS, Grafana"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-sm px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-zinc-600 font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">Descripción Breve</label>
+                <label className="block text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">Descripción Breve</label>
                 <input
                   type="text"
-                  placeholder="¿Para qué sirve o qué información muestra?"
+                  placeholder="¿Para qué sirve?"
                   value={formDesc}
                   onChange={(e) => setFormDesc(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-sm px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-zinc-600 font-sans"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">Categoría</label>
+                  <label className="block text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">Categoría</label>
                   <select
                     value={formCategory}
                     onChange={(e: any) => setFormCategory(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-sm px-3 py-2 text-xs font-mono uppercase text-zinc-300 focus:outline-none focus:border-zinc-600 cursor-pointer"
                   >
-                    <option value="data">Datos & Mapas</option>
-                    <option value="business">Empresa</option>
-                    <option value="personal">Personal OS</option>
-                    <option value="infra">Infraestructura</option>
-                    <option value="external">Servicio Externo</option>
+                    <option value="data">DATOS & MAPAS</option>
+                    <option value="business">EMPRESA</option>
+                    <option value="personal">PERSONAL OS</option>
+                    <option value="infra">INFRAESTRUCTURA</option>
+                    <option value="external">EXTERNO</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">Estado</label>
+                  <label className="block text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">Estado</label>
                   <select
                     value={formStatus}
                     onChange={(e: any) => setFormStatus(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 cursor-pointer"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-sm px-3 py-2 text-xs font-mono uppercase text-zinc-300 focus:outline-none focus:border-zinc-600 cursor-pointer"
                   >
-                    <option value="development">En Desarrollo</option>
-                    <option value="online">Online / Activo</option>
-                    <option value="external">Servicio Externo</option>
-                    <option value="planning">En Planeación</option>
+                    <option value="development">EN DESARROLLO</option>
+                    <option value="online">ONLINE / ACTIVO</option>
+                    <option value="external">SERVICIO EXTERNO</option>
+                    <option value="planning">EN PLANEACIÓN</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">URL o Puerto (Opcional)</label>
+                <label className="block text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">URL o Puerto (Opcional)</label>
                 <input
                   type="text"
-                  placeholder="ej. http://localhost:3001 o https://mi-app.com"
+                  placeholder="http://localhost:3001"
                   value={formUrl}
                   onChange={(e) => setFormUrl(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-sm px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-zinc-600 font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">Etiquetas (separadas por coma)</label>
+                <label className="block text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">Etiquetas (CSV)</label>
                 <input
                   type="text"
-                  placeholder="ej. WebSockets, Python, Cloud, GPS"
+                  placeholder="Python, Cloud, WebSockets"
                   value={formTags}
                   onChange={(e) => setFormTags(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-sm px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-zinc-600 font-mono uppercase"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2 pt-4 border-t border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setIsNewAppModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs hover:bg-slate-700"
+                  className="px-4 py-2 bg-zinc-950 text-zinc-400 text-xs font-mono uppercase hover:text-zinc-200 border border-zinc-800"
                 >
-                  Cancelar
+                  CANCELAR
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-500"
+                  className="px-4 py-2 bg-zinc-100 text-zinc-950 text-xs font-mono font-bold uppercase hover:bg-white flex items-center gap-2"
                 >
-                  Guardar en el Hub
+                  REGISTRAR
                 </button>
               </div>
             </form>

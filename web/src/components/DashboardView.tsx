@@ -80,16 +80,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800/80 rounded-2xl p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 rounded-md p-6">
         <div>
-          <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider">
-            <Sparkles className="w-4 h-4" />
+          <div className="flex items-center gap-2 text-zinc-400 text-xs font-mono uppercase tracking-widest">
+            <Sparkles className="w-3.5 h-3.5" />
             <span>Centro de Control Personal</span>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight mt-1 capitalize">
+          <h1 className="text-xl font-semibold text-zinc-100 tracking-tight mt-2 capitalize">
             {todayDateFormatted}
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-zinc-500 mt-1">
             Resumen diario de finanzas, productividad y conciliación de Mercado Pago.
           </p>
         </div>
@@ -97,9 +97,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {summary && summary.pending_reconciliation_count > 0 && (
           <button
             onClick={onNavigateToReconciliation}
-            className="flex items-center gap-2 self-start sm:self-auto px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/20 transition-all cursor-pointer shadow-lg shadow-amber-500/10"
+            className="flex items-center gap-2 self-start sm:self-auto px-4 py-2 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-medium hover:bg-zinc-700 transition-colors"
           >
-            <span>{summary.pending_reconciliation_count} movimientos pendientes</span>
+            <span className="font-mono">{summary.pending_reconciliation_count}</span>
+            <span>movimientos pendientes</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         )}
@@ -108,68 +109,60 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Gastos */}
-        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
             <span>Gastos Registrados</span>
-            <div className="p-2 rounded-lg bg-rose-500/10 text-rose-400">
-              <TrendingDown className="w-4 h-4" />
-            </div>
+            <TrendingDown className="w-4 h-4 text-zinc-500" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-mono text-zinc-100 mt-3">
             ${(summary?.total_expense || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">
-            Total en Mercado Pago & manuales
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">
+            Mercado Pago & manuales
           </div>
         </div>
 
         {/* Card 2: Ingresos */}
-        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
             <span>Ingresos Totales</span>
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
-              <TrendingUp className="w-4 h-4" />
-            </div>
+            <TrendingUp className="w-4 h-4 text-zinc-500" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-mono text-zinc-100 mt-3">
             ${(summary?.total_income || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">
-            Entradas y cobros acreditados
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">
+            Entradas y cobros
           </div>
         </div>
 
         {/* Card 3: Balance Neto */}
-        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
             <span>Balance Neto</span>
-            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-              <DollarSign className="w-4 h-4" />
-            </div>
+            <DollarSign className="w-4 h-4 text-zinc-500" />
           </div>
           <div
-            className={`text-2xl font-bold mt-2 ${
-              (summary?.net_balance || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400'
+            className={`text-2xl font-mono mt-3 ${
+              (summary?.net_balance || 0) >= 0 ? 'text-zinc-100' : 'text-zinc-400'
             }`}
           >
             ${(summary?.net_balance || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">Ingresos menos gastos</div>
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">Ingresos menos gastos</div>
         </div>
 
         {/* Card 4: Pomodoro de Hoy */}
-        <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-all">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-medium">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
             <span>Enfoque de Hoy</span>
-            <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-              <Clock className="w-4 h-4" />
-            </div>
+            <Clock className="w-4 h-4 text-zinc-500" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
-            {pomodoroStats?.total_minutes || 0} <span className="text-sm font-normal text-slate-400">min</span>
+          <div className="text-2xl font-mono text-zinc-100 mt-3 flex items-baseline gap-1">
+            {pomodoroStats?.total_minutes || 0} <span className="text-xs font-sans text-zinc-500">MIN</span>
           </div>
-          <div className="text-[11px] text-purple-400 mt-1">
-            {pomodoroStats?.total_pomodoros || 0} bloques de 25m completados
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">
+            {pomodoroStats?.total_pomodoros || 0} bloques completados
           </div>
         </div>
       </div>
@@ -177,31 +170,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Main Grid: Focus Widget + Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Live Focus Widget */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-6 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-white flex items-center gap-2">
-                <Clock className="w-4 h-4 text-indigo-400" />
-                Temporizador de Foco
+              <h2 className="text-sm font-semibold text-zinc-100 uppercase tracking-wider flex items-center gap-2">
+                <Clock className="w-4 h-4 text-zinc-400" />
+                Temporizador
               </h2>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">
+              <span className="text-[10px] px-2 py-0.5 rounded-sm bg-zinc-800 text-zinc-300 font-mono uppercase">
                 {activeProject}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
-              Sesión de Pomodoro rápida. Al completarla se guarda automáticamente.
+            <p className="text-xs text-zinc-500 mt-2">
+              Sesión de enfoque. Guardado automático.
             </p>
           </div>
 
           <div className="my-8 text-center">
-            <div className="text-6xl font-extrabold font-mono tracking-wider text-white">
+            <div className="text-6xl font-mono tracking-tight text-zinc-100">
               {formatTime(timerSeconds)}
             </div>
-            <div className="mt-3 flex items-center justify-center gap-2">
+            <div className="mt-4 flex items-center justify-center">
               <select
                 value={activeProject}
                 onChange={(e) => setActiveProject(e.target.value)}
-                className="bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-indigo-500"
+                className="bg-zinc-950 text-zinc-300 border border-zinc-800 rounded-sm px-2.5 py-1.5 text-xs font-mono uppercase tracking-wider focus:outline-none focus:border-zinc-700"
               >
                 <option value="Personal OS">Personal OS</option>
                 <option value="Trabajo">Trabajo</option>
@@ -211,17 +204,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-2">
             <button
               onClick={() => setIsActive(!isActive)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs shadow-lg transition-all ${
+              className={`flex items-center gap-2 px-5 py-2 rounded-md font-mono text-xs uppercase tracking-wider transition-colors border ${
                 isActive
-                  ? 'bg-amber-600 hover:bg-amber-500 text-white shadow-amber-600/20'
-                  : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/20'
+                  ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border-zinc-700'
+                  : 'bg-zinc-100 hover:bg-white text-zinc-950 border-zinc-100'
               }`}
             >
-              {isActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              <span>{isActive ? 'Pausar' : 'Iniciar Sesión'}</span>
+              {isActive ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              <span>{isActive ? 'PAUSAR' : 'INICIAR'}</span>
             </button>
 
             <button
@@ -229,7 +222,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 setIsActive(false);
                 setTimerSeconds(25 * 60);
               }}
-              className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+              className="p-2 rounded-md bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors"
               title="Reiniciar"
             >
               <RotateCcw className="w-4 h-4" />
@@ -238,42 +231,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <button
               disabled={isSavingPomo}
               onClick={handleCompletePomodoro}
-              className="px-3 py-2 rounded-xl bg-emerald-950/60 border border-emerald-800/60 text-emerald-300 text-xs font-medium hover:bg-emerald-900/60 transition-all flex items-center gap-1.5"
+              className="px-4 py-2 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-mono uppercase tracking-wider hover:bg-zinc-800 hover:text-zinc-100 transition-colors flex items-center gap-2"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Guardar</span>
+              <span>GUARDAR</span>
             </button>
           </div>
         </div>
 
         {/* Categories Breakdown */}
-        <div className="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-md p-6 flex flex-col justify-between">
           <div>
-            <h2 className="text-base font-semibold text-white flex items-center gap-2">
-              <TrendingDown className="w-4 h-4 text-rose-400" />
-              Distribución de Gastos por Categoría
+            <h2 className="text-sm font-semibold text-zinc-100 uppercase tracking-wider flex items-center gap-2">
+              <TrendingDown className="w-4 h-4 text-zinc-400" />
+              Distribución de Gastos
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-zinc-500 mt-2">
               Desglose acumulado de gastos asignados en Mercado Pago.
             </p>
           </div>
 
-          <div className="my-4 space-y-3.5">
+          <div className="my-6 space-y-4">
             {summary && Object.keys(summary.by_category).length > 0 ? (
               Object.entries(summary.by_category).map(([cat, amount]) => {
                 const total = summary.total_expense || 1;
                 const percentage = Math.round((amount / total) * 100);
                 return (
-                  <div key={cat} className="space-y-1">
-                    <div className="flex justify-between text-xs font-medium">
-                      <span className="text-slate-300">{cat}</span>
-                      <span className="text-slate-400">
-                        ${amount.toLocaleString('es-AR')} ({percentage}%)
+                  <div key={cat} className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-mono uppercase tracking-wider">
+                      <span className="text-zinc-400">{cat}</span>
+                      <span className="text-zinc-300">
+                        ${amount.toLocaleString('es-AR')} <span className="text-zinc-500 ml-1">[{percentage}%]</span>
                       </span>
                     </div>
-                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-1 w-full bg-zinc-950 rounded-none overflow-hidden border border-zinc-800">
                       <div
-                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                        className="h-full bg-zinc-300"
                         style={{ width: `${Math.min(percentage, 100)}%` }}
                       />
                     </div>
@@ -281,20 +274,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 );
               })
             ) : (
-              <div className="text-center py-8 text-slate-500 text-xs">
-                No hay movimientos categorizados aún. Carga un extracto o registra un gasto.
+              <div className="text-center py-8 text-zinc-600 text-xs font-mono uppercase tracking-widest">
+                SIN DATOS DE CATEGORÍAS
               </div>
             )}
           </div>
 
-          <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-            <span>Conciliación automática activada</span>
+          <div className="pt-4 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-500 font-mono uppercase tracking-wider">
+            <span>Auto-conciliación ACTIVA</span>
             <button
               onClick={onNavigateToReconciliation}
-              className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1"
+              className="text-zinc-300 hover:text-zinc-100 font-medium flex items-center gap-1 transition-colors"
             >
-              <span>Ir a la mesa de conciliación</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>IR A MESA</span>
+              <ArrowRight className="w-3 h-3" />
             </button>
           </div>
         </div>

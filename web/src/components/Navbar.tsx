@@ -18,20 +18,20 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isHealthy = health?.status === 'healthy';
 
   return (
-    <header className="border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-md sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="border-b border-zinc-800 bg-zinc-950 sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Brand */}
         <div
           onClick={() => setCurrentTab('hub')}
           className="flex items-center space-x-3 cursor-pointer group"
         >
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-            <span className="font-bold text-white text-base">OS</span>
+          <div className="h-7 w-7 bg-zinc-100 flex items-center justify-center rounded-sm">
+            <span className="font-bold text-zinc-950 text-xs font-mono">OS</span>
           </div>
           <div>
-            <span className="text-base font-semibold tracking-tight text-white flex items-center gap-1.5">
+            <span className="text-sm font-semibold tracking-tight text-zinc-100 flex items-center gap-2">
               Personal OS
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-sm bg-zinc-900 text-zinc-400 border border-zinc-800">
                 Hub
               </span>
             </span>
@@ -39,43 +39,45 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+        <nav className="flex items-center space-x-1 bg-zinc-900 p-1 rounded-md border border-zinc-800">
           <button
             onClick={() => setCurrentTab('hub')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
               currentTab === 'hub'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-zinc-100 text-zinc-950'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
             }`}
           >
-            <LayoutGrid className="w-4 h-4" />
+            <LayoutGrid className="w-3.5 h-3.5" />
             <span>Hub Central</span>
           </button>
 
           <button
             onClick={() => setCurrentTab('dashboard')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
               currentTab === 'dashboard'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-zinc-100 text-zinc-950'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
             }`}
           >
-            <LayoutDashboard className="w-4 h-4" />
-            <span>Dashboard OS</span>
+            <LayoutDashboard className="w-3.5 h-3.5" />
+            <span>Dashboard</span>
           </button>
 
           <button
             onClick={() => setCurrentTab('reconciliation')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all relative ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs font-medium transition-colors relative ${
               currentTab === 'reconciliation'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-zinc-100 text-zinc-950'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
             }`}
           >
-            <Receipt className="w-4 h-4" />
+            <Receipt className="w-3.5 h-3.5" />
             <span>Conciliación</span>
             {pendingCount > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <span className={`ml-1 px-1.5 py-0.5 rounded-sm text-[10px] font-mono border ${
+                currentTab === 'reconciliation' ? 'bg-zinc-950 text-zinc-100 border-zinc-800' : 'bg-zinc-800 text-zinc-300 border-zinc-700'
+              }`}>
                 {pendingCount}
               </span>
             )}
@@ -83,13 +85,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={() => setCurrentTab('pomodoro')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
               currentTab === 'pomodoro'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                ? 'bg-zinc-100 text-zinc-950'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
             }`}
           >
-            <Timer className="w-4 h-4" />
+            <Timer className="w-3.5 h-3.5" />
             <span>Enfoque</span>
           </button>
         </nav>
@@ -97,10 +99,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Status indicator */}
         <div className="flex items-center space-x-2">
           <div
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm text-xs border ${
               isHealthy
-                ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800/50'
-                : 'bg-rose-950/40 text-rose-400 border-rose-800/50'
+                ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                : 'bg-red-500/10 text-red-400 border-red-500/20'
             }`}
             title={
               health
@@ -109,12 +111,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             }
           >
             {isHealthy ? (
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <ShieldCheck className="w-3.5 h-3.5 text-green-400" />
             ) : (
-              <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+              <AlertCircle className="w-3.5 h-3.5 text-red-400" />
             )}
-            <span className="font-mono text-[11px]">
-              {isHealthy ? 'Docker: Healthy' : 'Docker: Disconnected'}
+            <span className="font-mono text-[10px] uppercase tracking-wider">
+              {isHealthy ? 'SYS_ONLINE' : 'SYS_OFFLINE'}
             </span>
           </div>
         </div>
