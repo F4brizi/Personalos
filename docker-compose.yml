@@ -72,6 +72,24 @@ services:
     networks:
       - personal_os_network
 
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: personal_os_web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://api:8000
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+    networks:
+      - personal_os_network
+
 volumes:
   postgres_data:
   redis_data:

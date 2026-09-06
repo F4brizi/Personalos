@@ -13,8 +13,9 @@
 1. [Consulta Inicial: Múltiples Sesiones y Misma API](#1-consulta-inicial-múltiples-sesiones-y-misma-api)
 2. [Sesión 01: Creación del Repositorio, Estrategia de Ramas y PRD](#2-sesión-01-creación-del-repositorio-estrategia-de-ramas-y-prd)
 3. [Sesión 02: Infraestructura Docker y Backend Core (FastAPI, Postgres, Redis)](#3-sesión-02-infraestructura-docker-y-backend-core)
-4. [Registro Acumulativo de Decisiones de Arquitectura](#4-registro-acumulativo-de-decisiones-de-arquitectura)
-5. [Estado Actual del Proyecto y Próximos Pasos](#5-estado-actual-del-proyecto-y-próximos-pasos)
+4. [Sesión 03: Desarrollo del Frontend Web (React 19, Tailwind CSS, Conciliación y Dashboard)](#4-sesión-03-desarrollo-del-frontend-web)
+5. [Registro Acumulativo de Decisiones de Arquitectura](#5-registro-acumulativo-de-decisiones-de-arquitectura)
+6. [Estado Actual del Proyecto y Próximos Pasos](#6-estado-actual-del-proyecto-y-próximos-pasos)
 
 ---
 
@@ -76,7 +77,35 @@
 
 ---
 
-## 4. Registro Acumulativo de Decisiones de Arquitectura
+## 4. Sesión 03: Desarrollo del Frontend Web
+- **Rama Git:** `session/03-frontend-web` (consolidada en `main`).
+- **Acciones Realizadas:**
+  1. Selección e implementación de stack web rápido: **React 19 + Vite + TypeScript + Tailwind CSS + Lucide Icons**.
+  2. Creación del cliente API tipado (`web/src/lib/api.ts`) para sincronización bidireccional con FastAPI.
+  3. Desarrollo de componentes modulares y diseño UI Dark Modern:
+     - **`Navbar`**: Navegación por pestañas (Dashboard, Conciliación, Enfoque), badge de transacciones pendientes e indicador en vivo de salud de Docker (PostgreSQL y Redis).
+     - **`DashboardView`**:
+       - Resumen diario y fecha en español.
+       - 4 tarjetas KPI en tiempo real: Gastos Registrados, Ingresos Totales, Balance Neto y Enfoque de Hoy.
+       - Widget de Foco en vivo: temporizador regresivo de 25m, selector de proyecto y guardado automático con la API.
+       - Desglose visual de gastos por categoría con barras de progreso relativas.
+     - **`ReconciliationTable` (Mesa de Conciliación Bancaria)**:
+       - Filtros rápidos por estado (Pendientes, Conciliados, Todos), búsqueda textual y selector de categorías.
+       - Acciones en línea: cambio de categoría instantáneo mediante desplegable y botón de un solo clic para conciliar (`[✓ Conciliar]`) o desmarcar (`[↩]`).
+       - Modal drag-and-drop para cargar extractos `.csv` o `.xlsx` de Mercado Pago con informe de duplicados omitidos y filas procesadas.
+       - Modal para registrar nuevos gastos o ingresos manuales.
+     - **`PomodoroView`**:
+       - Temporizador grande de enfoque con presets (25m Pomodoro, 50m Deep Work, 5m Pausa).
+       - Selector de proyecto, etiqueta (#tag) y contador interactivo de interrupciones.
+       - Tabla histórica de sesiones con detalle de fecha, proyecto y duración.
+  4. Contenerización en Docker:
+     - Adición del servicio `web` en `docker-compose.yml` expuesto en `http://localhost:3000`.
+     - Configuración de proxy inverso interno de Vite hacia `http://api:8000` para evitar bloqueos de red en contenedores.
+     - Validación exitosa de build (`npm run build` en 1.7s) y acceso verificado en `http://localhost:3000`.
+
+---
+
+## 5. Registro Acumulativo de Decisiones de Arquitectura
 
 | ID | Fecha | Tema | Decisión | Motivo / Justificación |
 | :--- | :---: | :--- | :--- | :--- |
@@ -85,19 +114,20 @@
 | **ADR-03** | 05/09/2026 | Base de Datos | PostgreSQL 16 + Redis | PostgreSQL ofrece consistencia relacional y campos `JSONB` flexibles para integraciones. Redis actúa como broker de tareas y caché. |
 | **ADR-04** | 05/09/2026 | Billetera Inicial | Mercado Pago | Formato estandarizado de exportación (CSV/Excel) y alta frecuencia de uso diario en Argentina. |
 | **ADR-05** | 05/09/2026 | Canal Móvil | Telegram Bot + Web PWA | El bot permite captura en 2 segundos por texto/audio sin la fricción de abrir un navegador en la calle. |
+| **ADR-06** | 06/09/2026 | Frontend Web | Vite + React 19 + Tailwind v4 | Carga instantánea, consumo ligero de recursos en Docker y soporte nativo de componentes interactivos. |
 
 ---
 
-## 5. Estado Actual del Proyecto y Próximos Pasos
+## 6. Estado Actual del Proyecto y Próximos Pasos
 
-### Estado de los Servicios:
-- 🟢 **API Core:** Activa en `http://localhost:8000` (Documentación Swagger en `/docs`).
-- 🟢 **PostgreSQL:** Activo en puerto `5432`.
-- 🟢 **Redis:** Activo en puerto `6379`.
+### Estado de los Servicios Docker:
+- 🟢 **Frontend Web:** Activo en [http://localhost:3000](http://localhost:3000).
+- 🟢 **API Core:** Activa en [http://localhost:8000](http://localhost:8000) (Swagger en `/docs`).
+- 🟢 **PostgreSQL 16:** Activo y conectado en puerto `5432`.
+- 🟢 **Redis 7:** Activo en puerto `6379`.
 
-### Próximas Opciones a Ejecutar:
-- [ ] **Opción 1:** Construcción del Frontend Web (Dashboard en Next.js / Vite + React + Tailwind + shadcn/ui).
-- [ ] **Opción 2:** Conexión y prueba en vivo del Bot de Telegram mediante token de `@BotFather`.
-- [ ] **Opción 3:** Prueba de ingesta de un extracto real de Mercado Pago vía endpoint `/upload-mercadopago`.
+### Próximas Tareas Disponibles:
+- [ ] Cargar un extracto real de Mercado Pago (CSV o Excel) mediante el botón de la interfaz web para probar la conciliación masiva.
+- [ ] Activar el Bot de Telegram agregando tu `TELEGRAM_BOT_TOKEN` en el archivo `.env`.
+- [ ] Agregar vista responsive PWA para atajos móviles.
 
-*(Este documento continuará actualizándose periódicamente con los nuevos hitos y decisiones).*
