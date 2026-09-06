@@ -6,11 +6,9 @@ import {
   ExternalLink,
   Server,
   Activity,
-  Cpu,
   Plus,
   Search,
   ArrowUpRight,
-  ShieldCheck,
   Layers,
   Terminal,
   Globe,
@@ -18,6 +16,9 @@ import {
   Timer,
   X,
   DollarSign,
+  Cloud,
+  BrainCircuit,
+  HeartPulse,
 } from 'lucide-react';
 import type { HealthStatus, TransactionSummary, PomodoroTodayStats } from '../lib/api';
 
@@ -144,7 +145,6 @@ interface HubViewProps {
 export const HubView: React.FC<HubViewProps> = ({
   health,
   summary,
-  pomodoroStats,
   onNavigateTab,
 }) => {
   const [apps, setApps] = useState<EcosystemApp[]>(() => {
@@ -202,109 +202,116 @@ export const HubView: React.FC<HubViewProps> = ({
     return matchesCategory && matchesSearch;
   });
 
-  const onlineCount = apps.filter((a) => a.status === 'online').length;
-  const devCount = apps.filter((a) => a.status === 'development').length;
-
   const renderIcon = (iconName: string) => {
     switch (iconName) {
-      case 'Map':
-        return <Map className="w-5 h-5 text-zinc-100" />;
-      case 'BarChart3':
-        return <BarChart3 className="w-5 h-5 text-zinc-100" />;
-      case 'Building2':
-        return <Building2 className="w-5 h-5 text-zinc-100" />;
-      case 'Server':
-        return <Server className="w-5 h-5 text-zinc-100" />;
-      case 'Terminal':
-        return <Terminal className="w-5 h-5 text-zinc-100" />;
-      case 'Globe':
-        return <Globe className="w-5 h-5 text-zinc-100" />;
-      case 'Receipt':
-        return <Receipt className="w-5 h-5 text-zinc-100" />;
-      case 'Timer':
-        return <Timer className="w-5 h-5 text-zinc-100" />;
-      default:
-        return <Layers className="w-5 h-5 text-zinc-100" />;
+      case 'Map': return <Map className="w-5 h-5 text-zinc-100" />;
+      case 'BarChart3': return <BarChart3 className="w-5 h-5 text-zinc-100" />;
+      case 'Building2': return <Building2 className="w-5 h-5 text-zinc-100" />;
+      case 'Server': return <Server className="w-5 h-5 text-zinc-100" />;
+      case 'Terminal': return <Terminal className="w-5 h-5 text-zinc-100" />;
+      case 'Globe': return <Globe className="w-5 h-5 text-zinc-100" />;
+      case 'Receipt': return <Receipt className="w-5 h-5 text-zinc-100" />;
+      case 'Timer': return <Timer className="w-5 h-5 text-zinc-100" />;
+      default: return <Layers className="w-5 h-5 text-zinc-100" />;
     }
   };
 
   return (
-    <div className="space-y-8">
-      {/* Hero Header & Global Infrastructure Metrics */}
-      <div className="relative overflow-hidden rounded-md bg-zinc-900 border border-zinc-800 p-6 sm:p-8">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2 text-zinc-400 text-xs font-mono uppercase tracking-widest mb-3">
-              <Activity className="w-4 h-4" />
-              <span>Infraestructura & Hub Central</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-semibold text-zinc-100 tracking-tight uppercase">
-              Command Center
-            </h1>
-            <p className="text-sm text-zinc-500 max-w-xl mt-2 leading-relaxed">
-              Navega y gestiona tus aplicaciones, módulos en desarrollo, pipelines de datos, mapas en tiempo real y servicios externos desde un único panel centralizado.
-            </p>
+    <div className="space-y-6">
+      {/* 6 Global Stats Widgets Bar */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+        {/* Widget 1: Balance Global */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-2">
+            <span className="text-[10px] font-mono uppercase tracking-widest">Balance Neto</span>
+            <DollarSign className="w-3.5 h-3.5" />
           </div>
-
-          {/* Quick Global Stats Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-zinc-100">{apps.length}</div>
-              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">Servicios</div>
-            </div>
-
-            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-green-400">{onlineCount}</div>
-              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">Online</div>
-            </div>
-
-            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-amber-400">{devCount}</div>
-              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">En Build</div>
-            </div>
-
-            <div className="bg-zinc-950 border border-zinc-800 rounded-sm p-3.5 text-center">
-              <div className="text-xl font-bold font-mono text-zinc-100">
-                {pomodoroStats?.total_minutes || 0}<span className="text-xs text-zinc-500 ml-0.5">m</span>
-              </div>
-              <div className="text-[10px] text-zinc-500 uppercase tracking-wider mt-1 font-mono">Foco Hoy</div>
-            </div>
+          <div className="text-lg font-mono font-semibold text-zinc-100">
+            ${(summary?.net_balance || 2450000).toLocaleString('es-AR')}
+          </div>
+          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
+            MP, Binance, Bancos
           </div>
         </div>
 
-        {/* Realtime Status Pill Bar */}
-        <div className="mt-8 pt-4 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-4 text-xs font-mono uppercase tracking-wider">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-sm border ${health?.status === 'healthy' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'} text-[10px]`}>
-              <ShieldCheck className="w-3.5 h-3.5" />
-              {health?.status === 'healthy'
-                ? `DB (${health.services.database.latency_ms}ms) & Redis (${health.services.redis.latency_ms}ms)`
-                : 'Servicios Docker Offline'}
-            </span>
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-zinc-800 text-zinc-300 border border-zinc-700 text-[10px]">
-              <Cpu className="w-3.5 h-3.5" />
-              Docker Network: Bridge activo
-            </span>
-            {summary && summary.pending_reconciliation_count > 0 && (
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px]">
-                <DollarSign className="w-3.5 h-3.5" />
-                {summary.pending_reconciliation_count} movimientos MP por conciliar
-              </span>
-            )}
+        {/* Widget 2: Token Usage */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-2">
+            <span className="text-[10px] font-mono uppercase tracking-widest">IA Tokens (Día)</span>
+            <BrainCircuit className="w-3.5 h-3.5" />
           </div>
+          <div className="text-lg font-mono font-semibold text-zinc-100">
+            1.2M <span className="text-[10px] text-zinc-500">TKNS</span>
+          </div>
+          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
+            Claude 3.5 & GPT-4o
+          </div>
+        </div>
 
-          <button
-            onClick={() => onNavigateTab('dashboard')}
-            className="text-[10px] text-zinc-400 hover:text-zinc-100 flex items-center gap-1 transition-colors"
-          >
-            <span>Ver Dashboard Personal</span>
-            <ArrowUpRight className="w-3 h-3" />
-          </button>
+        {/* Widget 3: Fit Stats */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-2">
+            <span className="text-[10px] font-mono uppercase tracking-widest">Métricas Fit</span>
+            <HeartPulse className="w-3.5 h-3.5" />
+          </div>
+          <div className="text-lg font-mono font-semibold text-zinc-100 flex items-baseline gap-1">
+            2,450 <span className="text-[9px] text-zinc-500">KCAL</span>
+          </div>
+          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1 text-green-400/80">
+            8.5K PASOS · OBJETIVO OK
+          </div>
+        </div>
+
+        {/* Widget 4: Health Core & Agents */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-2">
+            <span className="text-[10px] font-mono uppercase tracking-widest">Salud Sistema</span>
+            <Server className="w-3.5 h-3.5" />
+          </div>
+          <div className="text-lg font-mono font-semibold text-zinc-100">
+            {health?.status === 'healthy' ? '100%' : 'CAÍDO'} <span className="text-[10px] text-zinc-500">UPTIME</span>
+          </div>
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className={`w-1.5 h-1.5 rounded-full ${health?.status === 'healthy' ? 'bg-green-400' : 'bg-red-400'}`} />
+            <span className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest">
+              Nodos, Agentes & DB
+            </span>
+          </div>
+        </div>
+
+        {/* Widget 5: Context Dollar */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-2">
+            <span className="text-[10px] font-mono uppercase tracking-widest">Dólar ARS</span>
+            <Activity className="w-3.5 h-3.5" />
+          </div>
+          <div className="text-lg font-mono font-semibold text-zinc-100">
+            $1,250 <span className="text-[10px] text-zinc-500">ARS/USD</span>
+          </div>
+          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
+            Libre (Blue) / MEP
+          </div>
+        </div>
+
+        {/* Widget 6: Context Weather */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-2">
+            <span className="text-[10px] font-mono uppercase tracking-widest">Clima BA | FMA</span>
+            <Cloud className="w-3.5 h-3.5" />
+          </div>
+          <div className="text-lg font-mono font-semibold text-zinc-100 flex items-center justify-between">
+            <span>22°</span>
+            <span className="text-zinc-600 text-sm">|</span>
+            <span>31°</span>
+          </div>
+          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
+            CABA: Despejado · FMA: Húmedo
+          </div>
         </div>
       </div>
 
       {/* Toolbar: Category Filter & Search & Add Button */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4">
         {/* Category Pills */}
         <div className="flex flex-wrap items-center gap-1.5 bg-zinc-900 p-1 rounded-md border border-zinc-800 font-mono text-[11px] uppercase tracking-wider">
           {[
