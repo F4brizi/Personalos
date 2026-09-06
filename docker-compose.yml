@@ -90,6 +90,22 @@ services:
     networks:
       - personal_os_network
 
+  db_viewer:
+    image: sosedoff/pgweb
+    container_name: personal_os_db_viewer
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER:-personal_os}:${POSTGRES_PASSWORD:-personal_os_secret}@db:5432/${POSTGRES_DB:-personal_os_db}?sslmode=disable
+      - PGWEB_BIND=0.0.0.0
+      - PGWEB_LISTEN=8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - personal_os_network
+
 volumes:
   postgres_data:
   redis_data:

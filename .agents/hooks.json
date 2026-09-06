@@ -1,0 +1,11 @@
+{
+  "antigravity-telemetry": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python log_tokens.py",
+        "timeout": 15
+      }
+    ]
+  }
+}

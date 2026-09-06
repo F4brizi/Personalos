@@ -19,6 +19,8 @@ import {
   Cloud,
   BrainCircuit,
   HeartPulse,
+  Database,
+  Map as MapIcon,
 } from 'lucide-react';
 import type { TransactionSummary } from '../lib/api';
 
@@ -84,6 +86,30 @@ const DEFAULT_APPS: EcosystemApp[] = [
     tags: ['Python', 'Polars', 'Dashboards', 'DuckDB'],
     icon: 'BarChart3',
     gradient: 'from-zinc-800 to-zinc-700',
+  },
+  {
+    id: 'db',
+    name: 'Data Studio (SQL)',
+    category: 'infra',
+    description: 'Explorador y gestor visual de bases de datos PostgreSQL para todo el sistema.',
+    status: 'online',
+    statusText: 'Localhost:8081',
+    url: 'http://localhost:8081',
+    tags: ['PostgreSQL', 'Admin', 'DB'],
+    icon: 'Database',
+    gradient: 'from-zinc-800 to-zinc-700',
+  },
+  {
+    id: 'lusat',
+    name: 'LUSAT v7 Geointeligencia',
+    category: 'business',
+    description: 'Plataforma GIS de Hidrografía Oficial IGN/INA, Infraestructura, Energía & Minería.',
+    status: 'online',
+    statusText: 'Localhost:8085',
+    url: 'http://localhost:8085',
+    tags: ['GIS', 'Mapas', 'Altimetría 3D'],
+    icon: 'Map',
+    gradient: 'from-emerald-900 to-zinc-900',
   },
   {
     id: 'enterprise-os',
@@ -211,6 +237,8 @@ export const HubView: React.FC<HubViewProps> = ({
       case 'Globe': return <Globe className="w-5 h-5 text-zinc-100" />;
       case 'Receipt': return <Receipt className="w-5 h-5 text-zinc-100" />;
       case 'Timer': return <Timer className="w-5 h-5 text-zinc-100" />;
+      case 'Database': return <Database className="w-5 h-5 text-zinc-100" />;
+      case 'Map': return <MapIcon className="w-5 h-5 text-zinc-100" />;
       default: return <Layers className="w-5 h-5 text-zinc-100" />;
     }
   };
