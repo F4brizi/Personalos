@@ -4,3 +4,4 @@ from app.models.transaction import Transaction
 from app.models.pomodoro import PomodoroSession
 
 __all__ = ["Base", "TimestampMixin", "Transaction", "PomodoroSession"]
+from app.models.ai_usage import AiUsageLog

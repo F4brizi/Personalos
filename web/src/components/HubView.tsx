@@ -20,7 +20,7 @@ import {
   BrainCircuit,
   HeartPulse,
 } from 'lucide-react';
-import type { HealthStatus, TransactionSummary, PomodoroTodayStats } from '../lib/api';
+import type { TransactionSummary } from '../lib/api';
 
 export interface EcosystemApp {
   id: string;
@@ -136,14 +136,14 @@ const DEFAULT_APPS: EcosystemApp[] = [
 ];
 
 interface HubViewProps {
-  health: HealthStatus | null;
   summary: TransactionSummary | null;
-  pomodoroStats: PomodoroTodayStats | null;
+  aiStats: any | null; // using any for now or I can use AiUsageStats type
   onNavigateTab: (tab: 'dashboard' | 'reconciliation' | 'pomodoro') => void;
 }
 
 export const HubView: React.FC<HubViewProps> = ({
   summary,
+  aiStats,
   onNavigateTab,
 }) => {
   const [apps, setApps] = useState<EcosystemApp[]>(() => {
@@ -255,21 +255,26 @@ export const HubView: React.FC<HubViewProps> = ({
           <div className="flex items-end justify-between">
             <div>
               <div className="text-3xl font-mono font-bold text-zinc-100 flex items-baseline gap-2">
-                1.2M <span className="text-xs text-zinc-500">HOY</span>
+                {aiStats ? (aiStats.total_prompt_tokens + aiStats.total_completion_tokens).toLocaleString('es-AR') : '0'} 
+                <span className="text-xs text-zinc-500">TKNS</span>
               </div>
               <div className="text-xs text-zinc-400 font-mono mt-1">
-                Ayer: 950K <span className="text-red-400">↑ 26%</span>
+                Gasto Total: <span className="text-zinc-300 font-bold">${aiStats?.total_cost_usd?.toFixed(3) || '0.000'} USD</span>
               </div>
             </div>
             <div className="flex flex-col gap-1.5 text-[10px] font-mono uppercase tracking-wider text-right">
-              <div className="flex items-center justify-end gap-2">
-                <span className="text-zinc-500">Claude 3.5</span>
-                <span className="text-zinc-100 font-bold bg-zinc-950 px-2 py-0.5 rounded-sm border border-zinc-800">800K</span>
-              </div>
-              <div className="flex items-center justify-end gap-2">
-                <span className="text-zinc-500">GPT-4o</span>
-                <span className="text-zinc-100 font-bold bg-zinc-950 px-2 py-0.5 rounded-sm border border-zinc-800">400K</span>
-              </div>
+              {aiStats && Object.keys(aiStats.by_model).length > 0 ? (
+                Object.entries(aiStats.by_model).slice(0, 2).map(([model, count]: any) => (
+                  <div key={model} className="flex items-center justify-end gap-2">
+                    <span className="text-zinc-500">{model.replace('claude-', 'c-').replace('gpt-', 'g-')}</span>
+                    <span className="text-zinc-100 font-bold bg-zinc-950 px-2 py-0.5 rounded-sm border border-zinc-800">
+                      {count} req
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-zinc-600">Sin peticiones aún</div>
+              )}
             </div>
           </div>
         </div>

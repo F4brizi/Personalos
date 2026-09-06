@@ -54,6 +54,16 @@ export interface PomodoroTodayStats {
   by_project: Record<string, number>;
 }
 
+export interface AiUsageStats {
+  total_cost_usd: number;
+  total_prompt_tokens: number;
+  total_completion_tokens: number;
+  total_requests: number;
+  by_account: Record<string, number>;
+  by_model: Record<string, number>;
+  by_category: Record<string, number>;
+}
+
 const API_BASE = '/api/v1';
 
 export const api = {
@@ -180,4 +190,11 @@ export const api = {
     if (!res.ok) throw new Error('Error al registrar pomodoro');
     return res.json();
   },
+
+  // AI Usage
+  getAiStats: async (days = 30): Promise<AiUsageStats> => {
+    const res = await fetch(`${API_BASE}/ai/stats?days=${days}`);
+    if (!res.ok) throw new Error('Error al obtener estadísticas de IA');
+    return res.json();
+  }
 };

@@ -21,16 +21,18 @@ export function App() {
   const [summary, setSummary] = useState<TransactionSummary | null>(null);
   const [pomodoros, setPomodoros] = useState<PomodoroSession[]>([]);
   const [pomodoroStats, setPomodoroStats] = useState<PomodoroTodayStats | null>(null);
+  const [aiStats, setAiStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
     try {
-      const [hData, txData, sumData, pomoData, pomoStatsData] = await Promise.allSettled([
+      const [hData, txData, sumData, pomoData, pomoStatsData, aiData] = await Promise.allSettled([
         api.getHealth(),
         api.getTransactions({ limit: 100 }),
         api.getSummary(),
         api.getPomodoros(30),
         api.getTodayPomodoroStats(),
+        api.getAiStats(30),
       ]);
 
       if (hData.status === 'fulfilled') setHealth(hData.value);
@@ -38,6 +40,7 @@ export function App() {
       if (sumData.status === 'fulfilled') setSummary(sumData.value);
       if (pomoData.status === 'fulfilled') setPomodoros(pomoData.value);
       if (pomoStatsData.status === 'fulfilled') setPomodoroStats(pomoStatsData.value);
+      if (aiData.status === 'fulfilled') setAiStats(aiData.value);
     } catch (err) {
       console.error('Error loading data:', err);
     } finally {
@@ -74,9 +77,8 @@ export function App() {
           <>
             {currentTab === 'hub' && (
               <HubView
-                health={health}
                 summary={summary}
-                pomodoroStats={pomodoroStats}
+                aiStats={aiStats}
                 onNavigateTab={(tab) => setCurrentTab(tab)}
               />
             )}
