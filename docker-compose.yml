@@ -1,0 +1,81 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: personal_os_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-personal_os}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-personal_os_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-personal_os_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-personal_os} -d ${POSTGRES_DB:-personal_os_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - personal_os_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: personal_os_redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - personal_os_network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: personal_os_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./api:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - personal_os_network
+
+  bot:
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+    container_name: personal_os_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - API_BASE_URL=http://api:8000/api/v1
+    depends_on:
+      - api
+    profiles:
+      - bot
+    networks:
+      - personal_os_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  personal_os_network:
+    driver: bridge
