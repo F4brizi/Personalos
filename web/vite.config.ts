@@ -11,6 +11,9 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    watch: {
+      usePolling: true,
+    },
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://api:8000',

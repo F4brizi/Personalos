@@ -143,7 +143,6 @@ interface HubViewProps {
 }
 
 export const HubView: React.FC<HubViewProps> = ({
-  health,
   summary,
   onNavigateTab,
 }) => {
@@ -218,94 +217,180 @@ export const HubView: React.FC<HubViewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 6 Global Stats Widgets Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+      {/* 6 Global Stats Widgets Bar (Expanded) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {/* Widget 1: Balance Global */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center justify-between text-zinc-500 mb-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest">Balance Neto</span>
-            <DollarSign className="w-3.5 h-3.5" />
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 flex flex-col justify-between min-h-[160px] hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-4">
+            <span className="text-xs font-mono uppercase tracking-widest font-semibold">Balance Global</span>
+            <DollarSign className="w-4 h-4" />
           </div>
-          <div className="text-lg font-mono font-semibold text-zinc-100">
-            ${(summary?.net_balance || 2450000).toLocaleString('es-AR')}
-          </div>
-          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
-            MP, Binance, Bancos
+          <div>
+            <div className="text-3xl font-mono font-bold text-zinc-100 mb-3">
+              ${(summary?.net_balance || 2450000).toLocaleString('es-AR')}
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-[10px] font-mono uppercase tracking-wider">
+              <div className="bg-zinc-950 p-2 rounded-sm border border-zinc-800">
+                <div className="text-zinc-500 mb-1">Mercado Pago</div>
+                <div className="text-zinc-300 font-bold">$150,000</div>
+              </div>
+              <div className="bg-zinc-950 p-2 rounded-sm border border-zinc-800">
+                <div className="text-zinc-500 mb-1">Galicia</div>
+                <div className="text-zinc-300 font-bold">$850,000</div>
+              </div>
+              <div className="bg-zinc-950 p-2 rounded-sm border border-zinc-800">
+                <div className="text-zinc-500 mb-1">Binance</div>
+                <div className="text-zinc-300 font-bold">1,200 USDT</div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Widget 2: Token Usage */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center justify-between text-zinc-500 mb-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest">IA Tokens (Día)</span>
-            <BrainCircuit className="w-3.5 h-3.5" />
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 flex flex-col justify-between min-h-[160px] hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-4">
+            <span className="text-xs font-mono uppercase tracking-widest font-semibold">Uso de Tokens (IA)</span>
+            <BrainCircuit className="w-4 h-4" />
           </div>
-          <div className="text-lg font-mono font-semibold text-zinc-100">
-            1.2M <span className="text-[10px] text-zinc-500">TKNS</span>
-          </div>
-          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
-            Claude 3.5 & GPT-4o
+          <div className="flex items-end justify-between">
+            <div>
+              <div className="text-3xl font-mono font-bold text-zinc-100 flex items-baseline gap-2">
+                1.2M <span className="text-xs text-zinc-500">HOY</span>
+              </div>
+              <div className="text-xs text-zinc-400 font-mono mt-1">
+                Ayer: 950K <span className="text-red-400">↑ 26%</span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5 text-[10px] font-mono uppercase tracking-wider text-right">
+              <div className="flex items-center justify-end gap-2">
+                <span className="text-zinc-500">Claude 3.5</span>
+                <span className="text-zinc-100 font-bold bg-zinc-950 px-2 py-0.5 rounded-sm border border-zinc-800">800K</span>
+              </div>
+              <div className="flex items-center justify-end gap-2">
+                <span className="text-zinc-500">GPT-4o</span>
+                <span className="text-zinc-100 font-bold bg-zinc-950 px-2 py-0.5 rounded-sm border border-zinc-800">400K</span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Widget 3: Fit Stats */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center justify-between text-zinc-500 mb-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest">Métricas Fit</span>
-            <HeartPulse className="w-3.5 h-3.5" />
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 flex flex-col justify-between min-h-[160px] hover:border-zinc-700 transition-colors relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4">
+            <div className="bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-mono px-2 py-1 rounded-sm flex items-center gap-1.5 font-bold tracking-widest">
+              RACHA 12 DÍAS 🔥
+            </div>
           </div>
-          <div className="text-lg font-mono font-semibold text-zinc-100 flex items-baseline gap-1">
-            2,450 <span className="text-[9px] text-zinc-500">KCAL</span>
+          <div className="flex items-center justify-between text-zinc-500 mb-4">
+            <span className="text-xs font-mono uppercase tracking-widest font-semibold">Actividad & Salud</span>
+            <HeartPulse className="w-4 h-4" />
           </div>
-          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1 text-green-400/80">
-            8.5K PASOS · OBJETIVO OK
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="text-2xl font-mono font-bold text-zinc-100">8,500</div>
+              <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Pasos Hoy</div>
+            </div>
+            <div>
+              <div className="text-2xl font-mono font-bold text-zinc-100">2,450</div>
+              <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Kcal Quemadas</div>
+            </div>
+            <div>
+              <div className="text-xl font-mono font-bold text-zinc-300">7h 20m</div>
+              <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Sueño</div>
+            </div>
+            <div>
+              <div className="text-xl font-mono font-bold text-zinc-300">65 bpm</div>
+              <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Reposo</div>
+            </div>
           </div>
         </div>
 
         {/* Widget 4: Health Core & Agents */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center justify-between text-zinc-500 mb-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest">Salud Sistema</span>
-            <Server className="w-3.5 h-3.5" />
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 flex flex-col justify-between min-h-[160px] hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-4">
+            <span className="text-xs font-mono uppercase tracking-widest font-semibold">Salud de Infraestructura</span>
+            <Server className="w-4 h-4" />
           </div>
-          <div className="text-lg font-mono font-semibold text-zinc-100">
-            {health?.status === 'healthy' ? '100%' : 'CAÍDO'} <span className="text-[10px] text-zinc-500">UPTIME</span>
-          </div>
-          <div className="flex items-center gap-1.5 mt-1">
-            <span className={`w-1.5 h-1.5 rounded-full ${health?.status === 'healthy' ? 'bg-green-400' : 'bg-red-400'}`} />
-            <span className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest">
-              Nodos, Agentes & DB
-            </span>
+          <div className="grid grid-cols-2 gap-3 text-[10px] font-mono uppercase tracking-widest">
+            <div className="bg-zinc-950 border border-zinc-800 p-2 rounded-sm flex items-center justify-between">
+              <span className="text-zinc-400">Postgres DB</span>
+              <span className="text-green-400 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span> UP
+              </span>
+            </div>
+            <div className="bg-zinc-950 border border-zinc-800 p-2 rounded-sm flex items-center justify-between">
+              <span className="text-zinc-400">Redis Cache</span>
+              <span className="text-green-400 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span> UP
+              </span>
+            </div>
+            <div className="bg-zinc-950 border border-zinc-800 p-2 rounded-sm flex items-center justify-between">
+              <span className="text-zinc-400">FastAPI Core</span>
+              <span className="text-green-400 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span> UP
+              </span>
+            </div>
+            <div className="bg-zinc-950 border border-zinc-800 p-2 rounded-sm flex items-center justify-between">
+              <span className="text-zinc-400">Agent Network</span>
+              <span className="text-amber-400 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span> IDLE
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Widget 5: Context Dollar */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center justify-between text-zinc-500 mb-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest">Dólar ARS</span>
-            <Activity className="w-3.5 h-3.5" />
+        {/* Widget 5: Context Dollar & Economy (With Bar Chart) */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 flex flex-col justify-between min-h-[160px] hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-4">
+            <span className="text-xs font-mono uppercase tracking-widest font-semibold">Mercados & Economía</span>
+            <Activity className="w-4 h-4" />
           </div>
-          <div className="text-lg font-mono font-semibold text-zinc-100">
-            $1,250 <span className="text-[10px] text-zinc-500">ARS/USD</span>
-          </div>
-          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
-            Libre (Blue) / MEP
+          <div className="flex items-end justify-between h-full">
+            <div className="space-y-3">
+              <div>
+                <div className="text-zinc-500 text-[10px] font-mono uppercase tracking-widest mb-0.5">Dólar Libre</div>
+                <div className="text-xl font-mono font-bold text-zinc-100">$1,250</div>
+              </div>
+              <div>
+                <div className="text-zinc-500 text-[10px] font-mono uppercase tracking-widest mb-0.5">Riesgo País</div>
+                <div className="text-lg font-mono font-bold text-red-400">1,450 pts</div>
+              </div>
+            </div>
+            
+            {/* CSS Mini Bar Chart */}
+            <div className="flex items-end gap-1.5 h-16 opacity-80">
+              <div className="w-3 bg-zinc-700 rounded-t-sm" style={{ height: '40%' }}></div>
+              <div className="w-3 bg-zinc-600 rounded-t-sm" style={{ height: '60%' }}></div>
+              <div className="w-3 bg-zinc-500 rounded-t-sm" style={{ height: '55%' }}></div>
+              <div className="w-3 bg-zinc-400 rounded-t-sm" style={{ height: '80%' }}></div>
+              <div className="w-3 bg-zinc-200 rounded-t-sm" style={{ height: '100%' }}></div>
+            </div>
           </div>
         </div>
 
         {/* Widget 6: Context Weather */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-4 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center justify-between text-zinc-500 mb-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest">Clima BA | FMA</span>
-            <Cloud className="w-3.5 h-3.5" />
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 flex flex-col justify-between min-h-[160px] hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-500 mb-4">
+            <span className="text-xs font-mono uppercase tracking-widest font-semibold">Radar Meteorológico</span>
+            <Cloud className="w-4 h-4" />
           </div>
-          <div className="text-lg font-mono font-semibold text-zinc-100 flex items-center justify-between">
-            <span>22°</span>
-            <span className="text-zinc-600 text-sm">|</span>
-            <span>31°</span>
-          </div>
-          <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-widest mt-1">
-            CABA: Despejado · FMA: Húmedo
+          <div className="grid grid-cols-2 gap-4 h-full">
+            {/* BA */}
+            <div className="bg-zinc-950 border border-zinc-800 p-3 rounded-sm flex flex-col justify-between">
+              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Buenos Aires</div>
+              <div className="text-2xl font-mono font-bold text-zinc-100 my-1">22°C</div>
+              <div className="text-[10px] font-mono text-yellow-400/90 font-bold uppercase tracking-widest">
+                Soleado · 65% Hum
+              </div>
+            </div>
+            {/* FMA */}
+            <div className="bg-zinc-950 border border-zinc-800 p-3 rounded-sm flex flex-col justify-between">
+              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Formosa</div>
+              <div className="text-2xl font-mono font-bold text-zinc-100 my-1">31°C</div>
+              <div className="text-[10px] font-mono text-sky-400/90 font-bold uppercase tracking-widest">
+                Lluvias · 85% Hum
+              </div>
+            </div>
           </div>
         </div>
       </div>
