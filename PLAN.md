@@ -16,8 +16,9 @@ Construir un centro de control personal y agregador de datos modular (Personal O
 | `session/01-prd-y-plan` | Definición de PRD, arquitectura y plan de trabajo | 🟢 Completado | `PRD.md`, `PLAN.md`, estructura Git |
 | `session/02-docker-api-core` | Infraestructura Docker + Core FastAPI + Postgres | 🟢 Completado | `docker-compose.yml`, FastAPI base, Redis, DB Models |
 | `session/03-frontend-web` | Frontend Web (Dashboard, Conciliación, Pomodoro) | 🟢 Completado | React 19, Tailwind, Vite en `http://localhost:3000` |
-| `session/04-finanzas-mercadopago` | Ingesta masiva y auto-conciliación MP | ⚪ Siguiente | Pruebas con CSV/Excel reales y reglas avanzadas |
-| `session/05-bot-telegram` | Activación y pruebas del Bot de Telegram | ⚪ Pendiente | Ingesta móvil por chat/audio |
-| `session/06-frontend-mobile` | Experiencia Móvil PWA / Atajos | ⚪ Pendiente | Quick Capture táctil desde el celular |
-| `session/07-conectores-fitness` | Integración Fitness (Google Fit / Strava) | ⚪ Pendiente | Pasos y entrenamientos |
-| `session/08-conectores-instagram` | Integración Instagram Insights | ⚪ Pendiente | Métricas de redes |
+| `session/04-master-hub-launcher` | Command Center & Hub de Ecosistema e Infraestructura | 🟢 Completado | Master Hub, launcher de apps/mapas/BI, filtros y registro dinámico |
+| `session/05-finanzas-mercadopago` | Ingesta masiva y auto-conciliación MP | ⚪ Siguiente | Pruebas con CSV/Excel reales y reglas avanzadas |
+| `session/06-bot-telegram` | Activación y pruebas del Bot de Telegram | ⚪ Pendiente | Ingesta móvil por chat/audio |
+| `session/07-frontend-mobile` | Experiencia Móvil PWA / Atajos | ⚪ Pendiente | Quick Capture táctil desde el celular |
+| `session/08-conectores-fitness` | Integración Fitness (Google Fit / Strava) | ⚪ Pendiente | Pasos y entrenamientos |
+| `session/09-conectores-instagram` | Integración Instagram Insights | ⚪ Pendiente | Métricas de redes |

@@ -1,10 +1,10 @@
 import React from 'react';
-import { LayoutDashboard, Receipt, Timer, ShieldCheck, AlertCircle } from 'lucide-react';
+import { LayoutDashboard, Receipt, Timer, ShieldCheck, AlertCircle, LayoutGrid } from 'lucide-react';
 import type { HealthStatus } from '../lib/api';
 
 interface NavbarProps {
-  currentTab: 'dashboard' | 'reconciliation' | 'pomodoro';
-  setCurrentTab: (tab: 'dashboard' | 'reconciliation' | 'pomodoro') => void;
+  currentTab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro';
+  setCurrentTab: (tab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro') => void;
   health: HealthStatus | null;
   pendingCount: number;
 }
@@ -21,15 +21,18 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="border-b border-slate-800/80 bg-slate-950/60 backdrop-blur-md sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <div
+          onClick={() => setCurrentTab('hub')}
+          className="flex items-center space-x-3 cursor-pointer group"
+        >
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
             <span className="font-bold text-white text-base">OS</span>
           </div>
           <div>
             <span className="text-base font-semibold tracking-tight text-white flex items-center gap-1.5">
               Personal OS
               <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                v1.0
+                Hub
               </span>
             </span>
           </div>
@@ -37,6 +40,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Navigation Tabs */}
         <nav className="flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+          <button
+            onClick={() => setCurrentTab('hub')}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              currentTab === 'hub'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+            }`}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span>Hub Central</span>
+          </button>
+
           <button
             onClick={() => setCurrentTab('dashboard')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
@@ -46,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             <LayoutDashboard className="w-4 h-4" />
-            <span>Dashboard</span>
+            <span>Dashboard OS</span>
           </button>
 
           <button

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
+import { HubView } from './components/HubView';
 import { DashboardView } from './components/DashboardView';
 import { ReconciliationTable } from './components/ReconciliationTable';
 import { PomodoroView } from './components/PomodoroView';
@@ -14,7 +15,7 @@ import type {
 import { Loader2 } from 'lucide-react';
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState<'dashboard' | 'reconciliation' | 'pomodoro'>('dashboard');
+  const [currentTab, setCurrentTab] = useState<'hub' | 'dashboard' | 'reconciliation' | 'pomodoro'>('hub');
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<TransactionSummary | null>(null);
@@ -67,10 +68,19 @@ export function App() {
         {loading ? (
           <div className="h-96 flex flex-col items-center justify-center gap-3 text-slate-400">
             <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-            <span className="text-xs">Cargando datos de Personal OS...</span>
+            <span className="text-xs">Cargando datos del Hub de Personal OS...</span>
           </div>
         ) : (
           <>
+            {currentTab === 'hub' && (
+              <HubView
+                health={health}
+                summary={summary}
+                pomodoroStats={pomodoroStats}
+                onNavigateTab={(tab) => setCurrentTab(tab)}
+              />
+            )}
+
             {currentTab === 'dashboard' && (
               <DashboardView
                 summary={summary}
@@ -99,7 +109,7 @@ export function App() {
       </main>
 
       <footer className="border-t border-slate-900 bg-slate-950/40 py-4 text-center text-xs text-slate-600">
-        Personal OS · Desarrollado con FastAPI, PostgreSQL, Redis, React 19 & Tailwind CSS
+        Personal OS · Command Center & Launcher de Ecosistema · React 19 & Tailwind CSS
       </footer>
     </div>
   );

@@ -115,25 +115,43 @@
 | **ADR-04** | 05/09/2026 | Billetera Inicial | Mercado Pago | Formato estandarizado de exportación (CSV/Excel) y alta frecuencia de uso diario en Argentina. |
 | **ADR-05** | 05/09/2026 | Canal Móvil | Telegram Bot + Web PWA | El bot permite captura en 2 segundos por texto/audio sin la fricción de abrir un navegador en la calle. |
 | **ADR-06** | 06/09/2026 | Frontend Web | Vite + React 19 + Tailwind v4 | Carga instantánea, consumo ligero de recursos en Docker y soporte nativo de componentes interactivos. |
+| **ADR-07** | 06/09/2026 | Arquitectura Hub | Master Launcher & Service Directory | Unificar navegación para múltiples proyectos (Mapas, DataLab, OS Empresa, servicios externos) desde un panel con registro dinámico. |
 
 ---
 
 ## 6. Estado Actual del Proyecto y Próximos Pasos
 
 ### Estado de los Servicios Docker:
-- 🟢 **Frontend Web:** Activo en [http://localhost:3000](http://localhost:3000).
+- 🟢 **Frontend Web & Hub:** Activo en [http://localhost:3000](http://localhost:3000).
 - 🟢 **API Core:** Activa en [http://localhost:8000](http://localhost:8000) (Swagger en `/docs`).
 - 🟢 **PostgreSQL 16:** Activo y conectado en puerto `5432`.
 - 🟢 **Redis 7:** Activo en puerto `6379`.
 
 ---
 
-## 7. Cierre de Jornada (06/09/2026 - 00:52)
-- **Hito alcanzado:** Repositorio inicializado, arquitectura y PRD definidos, stack completo contenerizado en Docker levantado y funcionando con frontend moderno (Dashboard, Conciliación de Mercado Pago y Pomodoro).
-- **Próximos pasos para la siguiente sesión:**
-  1. Pruebas y refinamiento de la mesa de conciliación con extractos reales de Mercado Pago.
-  2. Puesta en marcha del Bot de Telegram para registro rápido móvil.
-  3. Nuevas funcionalidades e ideas que surjan durante el uso diario.
-
-*(Fin de sesión. Bitácora lista para continuar mañana).*
+## 7. Sesión 04: Command Center & Master Hub Launcher (06/09/2026)
+- **Rama Git:** `session/04-master-hub-launcher` (consolidada en `main`).
+- **Objetivo:** Crear un dashboard maestro que permita monitorear la infraestructura global y navegar hacia diversas aplicaciones independientes (mapas en tiempo real, análisis de datos, OS corporativo, servicios externos y módulos de Personal OS).
+- **Entregables:**
+  1. **Componente `HubView`:**
+     - Encabezado con métricas de infraestructura (Total Servicios, Servicios Online, En Desarrollo, Minutos de Foco de hoy).
+     - Barra de estado Docker en tiempo real (Latencias de DB, Redis y estado de red).
+     - Selector de categorías: `Todos`, `Personal OS`, `Datos & Mapas`, `Empresa`, `Infraestructura`, `Externos`.
+     - Buscador interactivo en vivo.
+     - Grid de aplicaciones y servicios preconfigurados:
+       - *Mesa de Conciliación MP* (Personal OS)
+       - *Pomodoro & Deep Work* (Personal OS)
+       - *GeoLive Radar* (Mapa Real-Time / GIS / WebSockets)
+       - *DataLab & Business Intelligence* (Python / Polars / BI)
+       - *Empresa OS / Business Suite* (CRM / ERP Corporativo)
+       - *FastAPI Gateway* (Swagger API Docs)
+       - *Docker Engine* (Contenedores y estado)
+       - *Servicios Cloud* (Consolas externas)
+     - Botón y modal *"Agregar App / URL"* que permite al usuario registrar cualquier nueva aplicación o microservicio, persistido en `localStorage`.
+  2. **Actualización de Navegación (`Navbar` & `App`):**
+     - `Hub Central` integrado como pestaña principal por defecto.
+     - Navegación fluida hacia el Dashboard Ejecutivo, la Conciliación y el Temporizador.
+  3. **Validación:**
+     - Compilación limpia con `npm run build` en 2.48s.
+     - Despliegue automático y verificado en `http://localhost:3000`.
 
