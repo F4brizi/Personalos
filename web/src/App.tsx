@@ -4,6 +4,7 @@ import { HubView } from './components/HubView';
 import { DashboardView } from './components/DashboardView';
 import { ReconciliationTable } from './components/ReconciliationTable';
 import { PomodoroView } from './components/PomodoroView';
+import { AiAnalyticsView } from './components/AiAnalyticsView';
 import { api } from './lib/api';
 import type {
   HealthStatus,
@@ -15,7 +16,7 @@ import type {
 import { Loader2 } from 'lucide-react';
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState<'hub' | 'dashboard' | 'reconciliation' | 'pomodoro'>('hub');
+  const [currentTab, setCurrentTab] = useState<'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai'>('hub');
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<TransactionSummary | null>(null);
@@ -105,6 +106,10 @@ export function App() {
                 todayStats={pomodoroStats}
                 onRefresh={loadData}
               />
+            )}
+
+            {currentTab === 'ai' && (
+              <AiAnalyticsView />
             )}
           </>
         )}

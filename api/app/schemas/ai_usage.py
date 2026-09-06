@@ -38,3 +38,21 @@ class AiUsageStats(BaseModel):
     by_account: Dict[str, float]  # cuenta -> costo usd
     by_model: Dict[str, int]      # modelo -> cant peticiones
     by_category: Dict[str, int]   # categoria -> cant peticiones
+
+class AiQuotaBase(BaseModel):
+    account_name: str
+    provider: str
+    limit_usd: float
+    reset_day_of_month: int
+
+class AiQuotaResponse(AiQuotaBase):
+    id: UUID
+    updated_at: datetime
+    
+    # Campos calculados al vuelo
+    current_usage_usd: float = 0.0
+    percent_used: float = 0.0
+    days_until_reset: int = 0
+
+    class Config:
+        from_attributes = True

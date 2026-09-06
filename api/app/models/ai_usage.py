@@ -31,3 +31,18 @@ class AiUsageLog(Base):
     # Notas adicionales y timestamps
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+class AiProviderQuota(Base):
+    __tablename__ = "ai_provider_quotas"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    account_name = Column(String, index=True, nullable=False, unique=True)
+    provider = Column(String, nullable=False)
+    
+    # Límites monetarios o de tokens (usaremos USD por simplicidad)
+    limit_usd = Column(Float, default=0.0)
+    
+    # Control de reseteo
+    reset_day_of_month = Column(Integer, default=1)  # Día 1 del mes por defecto
+    
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))

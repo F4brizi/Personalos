@@ -64,6 +64,17 @@ export interface AiUsageStats {
   by_category: Record<string, number>;
 }
 
+export interface AiQuota {
+  id: string;
+  account_name: string;
+  provider: string;
+  limit_usd: number;
+  reset_day_of_month: number;
+  current_usage_usd: number;
+  percent_used: number;
+  days_until_reset: number;
+}
+
 const API_BASE = '/api/v1';
 
 export const api = {
@@ -195,6 +206,12 @@ export const api = {
   getAiStats: async (days = 30): Promise<AiUsageStats> => {
     const res = await fetch(`${API_BASE}/ai/stats?days=${days}`);
     if (!res.ok) throw new Error('Error al obtener estadísticas de IA');
+    return res.json();
+  },
+
+  getAiQuotas: async (): Promise<AiQuota[]> => {
+    const res = await fetch(`${API_BASE}/ai/quotas`);
+    if (!res.ok) throw new Error('Error al obtener cuotas de IA');
     return res.json();
   }
 };

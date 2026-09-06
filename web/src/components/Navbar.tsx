@@ -1,10 +1,10 @@
 import React from 'react';
-import { LayoutDashboard, Receipt, Timer, ShieldCheck, AlertCircle, LayoutGrid } from 'lucide-react';
+import { LayoutDashboard, Receipt, Timer, ShieldCheck, AlertCircle, LayoutGrid, BrainCircuit } from 'lucide-react';
 import type { HealthStatus } from '../lib/api';
 
 interface NavbarProps {
-  currentTab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro';
-  setCurrentTab: (tab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro') => void;
+  currentTab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai';
+  setCurrentTab: (tab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai') => void;
   health: HealthStatus | null;
   pendingCount: number;
 }
@@ -83,17 +83,29 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          <button
-            onClick={() => setCurrentTab('pomodoro')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
-              currentTab === 'pomodoro'
-                ? 'bg-zinc-100 text-zinc-950'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
-            }`}
-          >
-            <Timer className="w-3.5 h-3.5" />
-            <span>Enfoque</span>
-          </button>
+            <button
+              onClick={() => setCurrentTab('pomodoro')}
+              className={`flex items-center space-x-2 px-3 py-1.5 rounded-sm transition-colors text-xs font-mono uppercase tracking-widest ${
+                currentTab === 'pomodoro'
+                  ? 'bg-zinc-100 text-zinc-950 font-bold'
+                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+              }`}
+            >
+              <Timer className="w-3.5 h-3.5" />
+              <span>Enfoque</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentTab('ai')}
+              className={`flex items-center space-x-2 px-3 py-1.5 rounded-sm transition-colors text-xs font-mono uppercase tracking-widest ${
+                currentTab === 'ai'
+                  ? 'bg-zinc-100 text-zinc-950 font-bold'
+                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+              }`}
+            >
+              <BrainCircuit className="w-3.5 h-3.5" />
+              <span>AI Lab</span>
+            </button>
         </nav>
 
         {/* Status indicator */}
