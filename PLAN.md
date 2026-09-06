@@ -14,8 +14,8 @@ Construir un centro de control personal y agregador de datos modular (Personal O
 | Sesión / Rama | Objetivo Principal | Estado | Entregable Clave |
 | :--- | :--- | :---: | :--- |
 | `session/01-prd-y-plan` | Definición de PRD, arquitectura y plan de trabajo | 🟢 Completado | `PRD.md`, `PLAN.md`, estructura Git |
-| `session/02-docker-api-core` | Infraestructura Docker + Core FastAPI + Postgres | ⚪ Siguiente | `docker-compose.yml`, FastAPI base, DB migrations |
-| `session/03-modulo-pomodoro` | Módulo nativo de Pomodoro / Enfoque | ⚪ Pendiente | Endpoints CRUD, métricas de productividad diarias |
+| `session/02-docker-api-core` | Infraestructura Docker + Core FastAPI + Postgres | 🟢 Completado | `docker-compose.yml`, FastAPI base, Redis, DB Models |
+| `session/03-modulo-pomodoro` | Módulo nativo de Pomodoro / Enfoque | 🟡 En curso / Siguiente | Endpoints CRUD, métricas de productividad diarias |
 | `session/04-finanzas-extractos` | Motor de Finanzas y Conciliación Bancaria | ⚪ Pendiente | Ingesta de CSV/Excel bancarios, asignación y conciliación |
 | `session/05-frontend-web` | Frontend Web (Desktop & Tablet) | ⚪ Pendiente | Dashboard principal, gráficos Tremor/Recharts, mesa de conciliación |
 | `session/06-frontend-mobile` | Experiencia Móvil (PWA / Quick Capture) | ⚪ Pendiente | Captura de gastos en 3 clics, temporizador de foco, timeline diario |
