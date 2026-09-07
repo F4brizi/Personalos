@@ -55,6 +55,25 @@ services:
     networks:
       - personal_os_network
 
+  worker:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: personal_os_worker
+    restart: unless-stopped
+    command: arq app.worker.WorkerSettings
+    env_file:
+      - .env
+    volumes:
+      - ./api:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - personal_os_network
+
   bot:
     build:
       context: ./bot

@@ -6,6 +6,7 @@ import { ReconciliationTable } from './components/ReconciliationTable';
 import { PomodoroView } from './components/PomodoroView';
 import { AiAnalyticsView } from './components/AiAnalyticsView';
 import { WikiView } from './components/WikiView';
+import { WeatherView } from './components/WeatherView';
 import { api } from './lib/api';
 import type {
   HealthStatus,
@@ -17,7 +18,7 @@ import type {
 import { Loader2 } from 'lucide-react';
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState<'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'wiki'>('hub');
+  const [currentTab, setCurrentTab] = useState<'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'wiki' | 'weather'>('hub');
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<TransactionSummary | null>(null);
@@ -115,6 +116,10 @@ export function App() {
 
             {currentTab === 'wiki' && (
               <WikiView />
+            )}
+
+            {currentTab === 'weather' && (
+              <WeatherView />
             )}
           </>
         )}
