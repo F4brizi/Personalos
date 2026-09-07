@@ -51,7 +51,12 @@ export const WeatherView: React.FC = () => {
       setNewLocName('');
       setNewLocLat('');
       setNewLocLon('');
-      setTimeout(() => fetchWeather(), 2000);
+      
+      // Auto-refresh logs multiple times to catch ARQ worker backfill completion instantly
+      setTimeout(() => fetchWeather(), 500);
+      setTimeout(() => fetchWeather(), 1500);
+      setTimeout(() => fetchWeather(), 3000);
+      setTimeout(() => fetchWeather(), 6000);
     } catch (err: any) {
       alert(err.message || "Error al agregar zona");
     } finally {
