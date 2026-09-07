@@ -90,7 +90,8 @@ export interface WeatherLog {
   log_date: string;
   temperature_max: number;
   temperature_min: number;
-  precipitation_probability: number;
+  precipitation_probability: number | null;
+  precipitation_mm: number | null;
   humidity: number | null;
   weather_condition: string;
   created_at: string;

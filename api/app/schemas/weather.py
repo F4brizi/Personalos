@@ -26,6 +26,7 @@ class WeatherLogResponse(BaseModel):
     temperature_max: Optional[float]
     temperature_min: Optional[float]
     precipitation_probability: Optional[int]
+    precipitation_mm: Optional[float]
     humidity: Optional[int]
     weather_condition: Optional[str]
     created_at: datetime

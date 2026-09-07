@@ -29,6 +29,7 @@ class WeatherLog(Base):
     temperature_max = Column(Float, nullable=True)
     temperature_min = Column(Float, nullable=True)
     precipitation_probability = Column(Integer, nullable=True)
+    precipitation_mm = Column(Float, nullable=True)
     humidity = Column(Integer, nullable=True)
     weather_condition = Column(String, nullable=True)
     

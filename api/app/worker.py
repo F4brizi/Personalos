@@ -43,8 +43,9 @@ async def fetch_weather_for_location(session: AsyncSession, location: WeatherLoc
     params = {
         "latitude": location.latitude,
         "longitude": location.longitude,
-        "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+        "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum",
         "timezone": "America/Argentina/Buenos_Aires",
+        "past_days": 2,
         "forecast_days": 1
     }
     
@@ -57,40 +58,55 @@ async def fetch_weather_for_location(session: AsyncSession, location: WeatherLoc
     if not daily or "time" not in daily or len(daily["time"]) == 0:
         return
         
-    today_date_str = daily["time"][0]
-    today_date = date.fromisoformat(today_date_str)
-    t_max = daily["temperature_2m_max"][0]
-    t_min = daily["temperature_2m_min"][0]
-    precip_prob = daily["precipitation_probability_max"][0]
-    code = daily["weather_code"][0]
-    
-    condition = WMO_CODES.get(code, "Desconocido")
+    today = date.today()
 
-    stmt = select(WeatherLog).where(
-        WeatherLog.location_id == location.id,
-        WeatherLog.log_date == today_date
-    )
-    result = await session.execute(stmt)
-    existing_log = result.scalar_one_or_none()
-    
-    if existing_log:
-        existing_log.temperature_max = t_max
-        existing_log.temperature_min = t_min
-        existing_log.precipitation_probability = precip_prob
-        existing_log.weather_condition = condition
-    else:
-        new_log = WeatherLog(
-            location_id=location.id,
-            log_date=today_date,
-            temperature_max=t_max,
-            temperature_min=t_min,
-            precipitation_probability=precip_prob,
-            weather_condition=condition
-        )
-        session.add(new_log)
+    for i in range(len(daily["time"])):
+        day_str = daily["time"][i]
+        dt = date.fromisoformat(day_str)
         
+        t_max = daily["temperature_2m_max"][i]
+        t_min = daily["temperature_2m_min"][i]
+        precip_prob = daily["precipitation_probability_max"][i]
+        precip_mm = daily["precipitation_sum"][i]
+        code = daily["weather_code"][i]
+        
+        if code is None:
+            continue
+            
+        condition = WMO_CODES.get(code, "Desconocido")
+
+        stmt = select(WeatherLog).where(
+            WeatherLog.location_id == location.id,
+            WeatherLog.log_date == dt
+        )
+        result = await session.execute(stmt)
+        existing_log = result.scalar_one_or_none()
+        
+        if existing_log:
+            # Update real temps and precipitation_mm ALWAYS
+            if t_max is not None: existing_log.temperature_max = t_max
+            if t_min is not None: existing_log.temperature_min = t_min
+            if precip_mm is not None: existing_log.precipitation_mm = precip_mm
+            
+            # ONLY update probability and condition if it's today (forecast) or it was empty
+            if dt >= today or existing_log.precipitation_probability is None:
+                if precip_prob is not None: existing_log.precipitation_probability = precip_prob
+                existing_log.weather_condition = condition
+        else:
+            # Create new
+            new_log = WeatherLog(
+                location_id=location.id,
+                log_date=dt,
+                temperature_max=t_max,
+                temperature_min=t_min,
+                precipitation_probability=precip_prob,
+                precipitation_mm=precip_mm,
+                weather_condition=condition
+            )
+            session.add(new_log)
+            
     await session.commit()
-    print(f"Clima actualizado para {location.name}: {condition}, {t_max}°C max, Lluvia: {precip_prob}%")
+    print(f"Clima sincronizado para {location.name}.")
 
 
 async def sync_daily_weather(ctx):
@@ -154,11 +170,6 @@ async def backfill_historical_weather(ctx, location_id: str, days_back: int):
                 continue
                 
             condition = WMO_CODES.get(code, "Desconocido")
-            
-            # Approximation: we don't have precipitation_probability for past days, we have precipitation_sum (mm). 
-            # We'll set prob to 100 if sum > 0, else 0
-            precip_prob = 100 if precip_sum and precip_sum > 0.5 else 0
-            
             dt = date.fromisoformat(day_str)
             
             # Check if exists
@@ -169,17 +180,20 @@ async def backfill_historical_weather(ctx, location_id: str, days_back: int):
             existing = (await session.execute(stmt)).scalar_one_or_none()
             
             if existing:
-                existing.temperature_max = t_max
-                existing.temperature_min = t_min
-                existing.precipitation_probability = precip_prob
-                existing.weather_condition = condition
+                if t_max is not None: existing.temperature_max = t_max
+                if t_min is not None: existing.temperature_min = t_min
+                if precip_sum is not None: existing.precipitation_mm = precip_sum
+                
+                # Only overwrite condition if we don't have it (we prefer what was recorded on that day if possible)
+                if not existing.weather_condition:
+                    existing.weather_condition = condition
             else:
                 new_log = WeatherLog(
                     location_id=location.id,
                     log_date=dt,
                     temperature_max=t_max,
                     temperature_min=t_min,
-                    precipitation_probability=precip_prob,
+                    precipitation_mm=precip_sum,
                     weather_condition=condition
                 )
                 session.add(new_log)
