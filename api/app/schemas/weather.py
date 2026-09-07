@@ -10,7 +10,7 @@ class WeatherLocationBase(BaseModel):
     is_active: bool = True
 
 class WeatherLocationCreate(WeatherLocationBase):
-    pass
+    historical_days: Optional[int] = 0
 
 class WeatherLocationResponse(WeatherLocationBase):
     id: uuid.UUID

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Cloud, Droplets, MapPin, Map, Sun, Calendar, Link as LinkIcon, Database } from 'lucide-react';
+import { Cloud, Droplets, MapPin, Map, Sun, Calendar, Link as LinkIcon, Database, Plus } from 'lucide-react';
 import { api } from '../lib/api';
 import type { WeatherLog } from '../lib/api';
 
@@ -12,19 +12,53 @@ export const WeatherView: React.FC = () => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 
+  // Formulario nueva zona
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newLocName, setNewLocName] = useState('');
+  const [newLocLat, setNewLocLat] = useState('');
+  const [newLocLon, setNewLocLon] = useState('');
+  const [newLocDays, setNewLocDays] = useState('30');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const fetchWeather = async () => {
+    try {
+      const data = await api.getWeatherLogs();
+      setLogs(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const data = await api.getWeatherLogs();
-        setLogs(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchWeather();
   }, []);
+
+  const handleAddLocation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLocName || !newLocLat || !newLocLon) return;
+    
+    setIsSubmitting(true);
+    try {
+      await api.createWeatherLocation({
+        name: newLocName,
+        latitude: parseFloat(newLocLat),
+        longitude: parseFloat(newLocLon),
+        historical_days: parseInt(newLocDays, 10)
+      });
+      setShowAddForm(false);
+      setNewLocName('');
+      setNewLocLat('');
+      setNewLocLon('');
+      // Give ARQ worker 2 seconds to fetch the data, then reload
+      setTimeout(() => fetchWeather(), 2000);
+    } catch (err: any) {
+      alert(err.message || "Error al agregar zona");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Agrupar logs por location name (Solo para las tarjetas superiores)
   const latestLogsByLocation = useMemo(() => {
@@ -130,51 +164,102 @@ export const WeatherView: React.FC = () => {
         </h3>
         
         {/* Controles de Filtro */}
-        <div className="flex flex-wrap items-center gap-4 bg-zinc-900/50 p-4 rounded-sm border border-zinc-800">
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-mono text-zinc-500 uppercase">Ubicación</label>
-            <select 
-              value={selectedLocation} 
-              onChange={e => setSelectedLocation(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:outline-none focus:border-emerald-500/50"
-            >
-              <option value="all">TODAS LAS ZONAS</option>
-              {uniqueLocations.map(loc => (
-                <option key={loc} value={loc}>{loc.toUpperCase()}</option>
-              ))}
-            </select>
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-4 bg-zinc-900/50 p-4 rounded-sm border border-zinc-800">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-mono text-zinc-500 uppercase">Ubicación</label>
+              <select 
+                value={selectedLocation} 
+                onChange={e => setSelectedLocation(e.target.value)}
+                className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:outline-none focus:border-emerald-500/50"
+              >
+                <option value="all">TODAS LAS ZONAS</option>
+                {uniqueLocations.map(loc => (
+                  <option key={loc} value={loc}>{loc.toUpperCase()}</option>
+                ))}
+              </select>
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-mono text-zinc-500 uppercase">Desde</label>
-            <input 
-              type="date" 
-              value={startDate}
-              onChange={e => setStartDate(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:outline-none focus:border-emerald-500/50"
-            />
-          </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-mono text-zinc-500 uppercase">Desde</label>
+              <input 
+                type="date" 
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:outline-none focus:border-emerald-500/50"
+              />
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-mono text-zinc-500 uppercase">Hasta</label>
-            <input 
-              type="date" 
-              value={endDate}
-              onChange={e => setEndDate(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:outline-none focus:border-emerald-500/50"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-mono text-zinc-500 uppercase">Hasta</label>
+              <input 
+                type="date" 
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:outline-none focus:border-emerald-500/50"
+              />
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-mono text-zinc-500 uppercase opacity-0">Reset</label>
+              <button 
+                onClick={() => { setSelectedLocation('all'); setStartDate(''); setEndDate(''); }}
+                className="text-xs font-mono text-zinc-400 hover:text-zinc-100 bg-zinc-800 px-3 py-1.5 rounded-sm transition-colors border border-zinc-700 hover:border-zinc-500"
+              >
+                LIMPIAR FILTROS
+              </button>
+            </div>
           </div>
           
-          <div className="flex flex-col gap-1 ml-auto">
-            <label className="text-[10px] font-mono text-zinc-500 uppercase opacity-0">Reset</label>
-            <button 
-              onClick={() => { setSelectedLocation('all'); setStartDate(''); setEndDate(''); }}
-              className="text-xs font-mono text-zinc-400 hover:text-zinc-100 bg-zinc-800 px-3 py-1.5 rounded-sm transition-colors border border-zinc-700 hover:border-zinc-500"
-            >
-              LIMPIAR FILTROS
-            </button>
+          <div className="flex flex-col gap-1">
+             <label className="text-[10px] font-mono text-zinc-500 uppercase opacity-0">Add</label>
+             <button 
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="text-xs font-mono text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-3 py-1.5 rounded-sm transition-colors border border-emerald-500/20 hover:border-emerald-500/50 flex items-center gap-2"
+              >
+                <Plus className="w-3 h-3" />
+                NUEVA ZONA
+              </button>
           </div>
         </div>
+
+        {showAddForm && (
+          <form onSubmit={handleAddLocation} className="bg-zinc-900 border border-emerald-500/20 p-4 rounded-sm flex flex-col gap-4">
+            <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+               <MapPin className="w-4 h-4 text-emerald-400" />
+               <h4 className="font-mono text-sm text-zinc-100 uppercase">Registrar Nueva Zona</h4>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-mono text-zinc-500 uppercase">Nombre Obra / Zona</label>
+                <input required type="text" value={newLocName} onChange={e => setNewLocName(e.target.value)} placeholder="Ej: Obra Tigre" className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:border-emerald-500/50 focus:outline-none" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-mono text-zinc-500 uppercase">Latitud</label>
+                <input required type="number" step="any" value={newLocLat} onChange={e => setNewLocLat(e.target.value)} placeholder="-34.42" className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:border-emerald-500/50 focus:outline-none" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-mono text-zinc-500 uppercase">Longitud</label>
+                <input required type="number" step="any" value={newLocLon} onChange={e => setNewLocLon(e.target.value)} placeholder="-58.57" className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:border-emerald-500/50 focus:outline-none" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-mono text-zinc-500 uppercase">Historial (Días atrás)</label>
+                <select value={newLocDays} onChange={e => setNewLocDays(e.target.value)} className="bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-mono px-2 py-1.5 rounded-sm focus:border-emerald-500/50 focus:outline-none">
+                  <option value="0">Solo pronóstico actual</option>
+                  <option value="7">Últimos 7 días</option>
+                  <option value="30">Últimos 30 días</option>
+                  <option value="90">Últimos 90 días (Máx)</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={() => setShowAddForm(false)} className="text-xs font-mono px-4 py-2 rounded-sm text-zinc-400 hover:bg-zinc-800 border border-zinc-800 transition-colors">CANCELAR</button>
+              <button type="submit" disabled={isSubmitting} className="text-xs font-mono px-4 py-2 rounded-sm bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30 transition-colors disabled:opacity-50">
+                {isSubmitting ? 'CREANDO...' : 'REGISTRAR'}
+              </button>
+            </div>
+          </form>
+        )}
 
         {/* Tabla */}
         <div className="overflow-x-auto border border-zinc-800 rounded-sm">

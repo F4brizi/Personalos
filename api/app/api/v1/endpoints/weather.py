@@ -16,6 +16,10 @@ async def list_locations(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(WeatherLocation))
     return result.scalars().all()
 
+from arq import create_pool
+from arq.connections import RedisSettings
+from app.core.config import settings
+
 @router.post("/locations", response_model=WeatherLocationResponse, status_code=status.HTTP_201_CREATED)
 async def create_location(loc_in: WeatherLocationCreate, db: AsyncSession = Depends(get_db)):
     # Check if name exists
@@ -23,10 +27,23 @@ async def create_location(loc_in: WeatherLocationCreate, db: AsyncSession = Depe
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Location name already exists")
         
-    loc = WeatherLocation(**loc_in.model_dump())
+    loc = WeatherLocation(
+        name=loc_in.name,
+        latitude=loc_in.latitude,
+        longitude=loc_in.longitude,
+        is_active=loc_in.is_active
+    )
     db.add(loc)
     await db.commit()
     await db.refresh(loc)
+
+    if loc_in.historical_days and loc_in.historical_days > 0:
+        redis_host = settings.REDIS_HOST if hasattr(settings, 'REDIS_HOST') else 'redis'
+        redis_port = settings.REDIS_PORT if hasattr(settings, 'REDIS_PORT') else 6379
+        redis = await create_pool(RedisSettings(host=redis_host, port=redis_port))
+        await redis.enqueue_job('backfill_historical_weather', str(loc.id), loc_in.historical_days)
+        await redis.aclose()
+
     return loc
 
 @router.get("/logs", response_model=List[WeatherLogResponse])

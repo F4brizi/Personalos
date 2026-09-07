@@ -242,5 +242,23 @@ export const api = {
     const res = await fetch(`${API_BASE}/weather/logs`);
     if (!res.ok) throw new Error('Error al obtener logs de clima');
     return res.json();
+  },
+
+  createWeatherLocation: async (data: {
+    name: string;
+    latitude: number;
+    longitude: number;
+    historical_days?: number;
+  }): Promise<WeatherLocation> => {
+    const res = await fetch(`${API_BASE}/weather/locations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Error al crear ubicación meteorológica');
+    }
+    return res.json();
   }
 };
