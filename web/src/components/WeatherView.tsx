@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Cloud, Droplets, MapPin, Map, Sun, Calendar, Link as LinkIcon, Database, Plus, Trash2, Download } from 'lucide-react';
+import { Cloud, Droplets, MapPin, Map,  Calendar, Link as LinkIcon, Database, Plus, Trash2, Download } from 'lucide-react';
 import { api } from '../lib/api';
 import type { WeatherLog } from '../lib/api';
 
@@ -111,14 +111,14 @@ export const WeatherView: React.FC = () => {
   };
 
   // Agrupar logs por location name (Solo para las tarjetas superiores)
-  const latestLogsByLocation = useMemo(() => {
+  /* const latestLogsByLocation = useMemo(() => {
     return logs.reduce((acc, curr) => {
       if (!acc[curr.location.name]) {
         acc[curr.location.name] = curr;
       }
       return acc;
     }, {} as Record<string, WeatherLog>);
-  }, [logs]);
+  }, [logs]); */
 
   // Obtener nombres de locaciones únicas para el filtro
   const uniqueLocations = useMemo(() => {
@@ -160,59 +160,85 @@ export const WeatherView: React.FC = () => {
         </div>
       </div>
 
-      {/* RADARES ACTUALES (TARJETAS) */}
+      {/* RADARES ACTUALES (TABLA REDISEÑADA) */}
       <div className="space-y-3">
-        <h3 className="font-mono text-sm text-zinc-400 uppercase tracking-widest border-b border-zinc-800 pb-2">Clima de Hoy</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Object.values(latestLogsByLocation).map((log) => (
-            <div key={`card-${log.id}`} className="bg-zinc-900 border border-zinc-800 p-5 rounded-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Sun className="w-16 h-16" />
-              </div>
-              
-              <div className="flex items-center justify-between gap-2 mb-4">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-emerald-400" />
-                  <h3 className="font-mono text-sm font-bold text-zinc-100 uppercase tracking-wider">{log.location.name}</h3>
-                </div>
-                <button 
-                  onClick={() => handleDeleteLocation(log.location.id, log.location.name)}
-                  className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-sm transition-colors z-10"
-                  title="Eliminar zona"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-xs text-zinc-500 font-mono uppercase">Temperatura Max</div>
-                  <div className="text-2xl font-bold text-zinc-100">{log.temperature_max}°C</div>
-                  <div className="text-xs text-zinc-500 font-mono">Min: {log.temperature_min}°C</div>
-                </div>
-                
-                <div>
-                  <div className="text-xs text-zinc-500 font-mono uppercase">Lluvia</div>
-                  <div className="text-2xl font-bold text-blue-400 flex items-baseline gap-1">
-                    {log.precipitation_probability !== null ? `${log.precipitation_probability}%` : '-'}
-                  </div>
-                  <div className="text-[10px] text-zinc-500 font-mono flex items-center gap-1 mt-1">
-                    <Droplets className="w-3 h-3" />
-                    {log.precipitation_mm !== null ? `Caídos: ${log.precipitation_mm}mm` : 'Pronóstico de hoy'}
-                  </div>
-                </div>
-              </div>
+        <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+          <h3 className="font-mono text-sm text-zinc-400 uppercase tracking-widest">Clima Operativo</h3>
+          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+            {new Date().getHours() >= 17 ? (
+              <span className="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-sm border border-blue-500/20">Proyección: Mañana</span>
+            ) : (
+              <span className="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-sm border border-emerald-500/20">Proyección: Hoy</span>
+            )}
+          </div>
+        </div>
 
-              <div className="mt-4 pt-4 border-t border-zinc-800 flex justify-between items-center">
-                <span className="text-xs font-mono text-zinc-400 uppercase bg-zinc-950 px-2 py-1 rounded-sm border border-zinc-800">
-                  {log.weather_condition}
-                </span>
-                <span className="text-xs font-mono text-zinc-500">
-                  {log.log_date}
-                </span>
-              </div>
-            </div>
-          ))}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-sm overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-zinc-500 uppercase bg-zinc-950 font-mono border-b border-zinc-800">
+              <tr>
+                <th className="px-4 py-3">Obra / Zona</th>
+                <th className="px-4 py-3 text-right">Prob. Lluvia</th>
+                <th className="px-4 py-3 text-right">T. Min</th>
+                <th className="px-4 py-3 text-right">T. Max</th>
+                <th className="px-4 py-3 text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/50">
+              {(() => {
+                const now = new Date();
+                const isAfter5PM = now.getHours() >= 17;
+                const targetObj = new Date(now);
+                if (isAfter5PM) {
+                  targetObj.setDate(targetObj.getDate() + 1);
+                }
+                const year = targetObj.getFullYear();
+                const month = String(targetObj.getMonth() + 1).padStart(2, '0');
+                const day = String(targetObj.getDate()).padStart(2, '0');
+                const targetDateStr = `${year}-${month}-${day}`;
+                
+                const logsForDate = logs.filter(l => l.log_date === targetDateStr);
+                const uniqueLocs = Array.from(new Set(logsForDate.map(l => l.location.name))).slice(0, 2);
+                const tableRows = uniqueLocs.map(locName => logsForDate.find(l => l.location.name === locName)!);
+
+                if (tableRows.length === 0) {
+                  return (
+                    <tr>
+                      <td colSpan={5} className="px-4 py-6 text-center text-zinc-500 font-mono text-xs">
+                        Sin datos meteorológicos para {isAfter5PM ? 'mañana' : 'hoy'}. (Worker procesando...)
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return tableRows.map(log => (
+                  <tr key={log.id} className="hover:bg-zinc-800/50 transition-colors">
+                    <td className="px-4 py-3 font-mono text-zinc-100 text-xs font-bold uppercase flex items-center gap-2">
+                      <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                      {log.location.name}
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono text-xs">
+                      <span className={`flex items-center justify-end gap-1 ${log.precipitation_probability && log.precipitation_probability > 30 ? 'text-blue-400 font-bold' : 'text-zinc-500'}`}>
+                        {log.precipitation_probability !== null ? `${log.precipitation_probability}%` : '-'}
+                        {log.precipitation_probability && log.precipitation_probability > 30 && <Droplets className="w-3 h-3" />}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono text-zinc-400 text-xs">{log.temperature_min}°C</td>
+                    <td className="px-4 py-3 text-right font-mono text-zinc-200 text-xs">{log.temperature_max}°C</td>
+                    <td className="px-4 py-3 text-right">
+                      <button 
+                        onClick={() => handleDeleteLocation(log.location.id, log.location.name)}
+                        className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-sm transition-colors inline-block"
+                        title="Eliminar zona"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </td>
+                  </tr>
+                ));
+              })()}
+            </tbody>
+          </table>
         </div>
       </div>
       
