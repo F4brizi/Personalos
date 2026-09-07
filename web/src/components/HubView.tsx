@@ -16,13 +16,13 @@ import {
   Timer,
   X,
   DollarSign,
-  Cloud,
-  BrainCircuit,
+    BrainCircuit,
   HeartPulse,
   Database,
   Map as MapIcon,
 } from 'lucide-react';
-import type { TransactionSummary } from '../lib/api';
+import { api } from '../lib/api';
+import type { TransactionSummary, WeatherLog } from '../lib/api';
 
 export interface EcosystemApp {
   id: string;
@@ -172,6 +172,12 @@ export const HubView: React.FC<HubViewProps> = ({
   aiStats,
   onNavigateTab,
 }) => {
+  const [weatherLogs, setWeatherLogs] = useState<WeatherLog[]>([]);
+
+  useEffect(() => {
+    api.getWeatherLogs().then(setWeatherLogs).catch(console.error);
+  }, []);
+
   const [apps, setApps] = useState<EcosystemApp[]>(() => {
     const saved = localStorage.getItem('personal_os_ecosystem_apps');
     return saved ? JSON.parse(saved) : DEFAULT_APPS;
@@ -404,26 +410,68 @@ export const HubView: React.FC<HubViewProps> = ({
         {/* Widget 6: Context Weather */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 flex flex-col justify-between min-h-[160px] hover:border-zinc-700 transition-colors">
           <div className="flex items-center justify-between text-zinc-500 mb-4">
-            <span className="text-xs font-mono uppercase tracking-widest font-semibold">Radar Meteorológico</span>
-            <Cloud className="w-4 h-4" />
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono uppercase tracking-widest font-semibold">Radar Operativo</span>
+            </div>
+            <div className="text-[9px] font-mono uppercase tracking-widest text-zinc-400">
+              {new Date().getHours() >= 17 ? 'Proyección: Mañana' : 'Proyección: Hoy'}
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 h-full">
-            {/* BA */}
-            <div className="bg-zinc-950 border border-zinc-800 p-3 rounded-sm flex flex-col justify-between">
-              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Buenos Aires</div>
-              <div className="text-2xl font-mono font-bold text-zinc-100 my-1">22°C</div>
-              <div className="text-[10px] font-mono text-yellow-400/90 font-bold uppercase tracking-widest">
-                Soleado · 65% Hum
-              </div>
-            </div>
-            {/* FMA */}
-            <div className="bg-zinc-950 border border-zinc-800 p-3 rounded-sm flex flex-col justify-between">
-              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Formosa</div>
-              <div className="text-2xl font-mono font-bold text-zinc-100 my-1">31°C</div>
-              <div className="text-[10px] font-mono text-sky-400/90 font-bold uppercase tracking-widest">
-                Lluvias · 85% Hum
-              </div>
-            </div>
+          
+          <div className="overflow-x-auto border border-zinc-800 rounded-sm">
+            <table className="w-full text-xs text-left">
+              <thead className="text-[10px] text-zinc-500 uppercase bg-zinc-950 font-mono border-b border-zinc-800">
+                <tr>
+                  <th className="px-3 py-2">Zona</th>
+                  <th className="px-3 py-2 text-right">Lluvia</th>
+                  <th className="px-3 py-2 text-right">Min/Max</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-800/50">
+                {(() => {
+                  const now = new Date();
+                  const isAfter5PM = now.getHours() >= 17;
+                  const targetObj = new Date(now);
+                  if (isAfter5PM) {
+                    targetObj.setDate(targetObj.getDate() + 1);
+                  }
+                  const year = targetObj.getFullYear();
+                  const month = String(targetObj.getMonth() + 1).padStart(2, '0');
+                  const day = String(targetObj.getDate()).padStart(2, '0');
+                  const targetDateStr = `${year}-${month}-${day}`;
+                  
+                  const logsForDate = weatherLogs.filter(l => l.log_date === targetDateStr);
+                  const uniqueLocs = Array.from(new Set(logsForDate.map(l => l.location.name))).slice(0, 2);
+                  const tableRows = uniqueLocs.map(locName => logsForDate.find(l => l.location.name === locName)!);
+
+                  if (tableRows.length === 0) {
+                    return (
+                      <tr>
+                        <td colSpan={3} className="px-3 py-4 text-center text-zinc-500 font-mono text-[10px]">
+                          Sin datos para {isAfter5PM ? 'mañana' : 'hoy'}.
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return tableRows.map(log => (
+                    <tr key={log.id} className="hover:bg-zinc-800/50 transition-colors">
+                      <td className="px-3 py-2 font-mono text-zinc-100 font-bold uppercase truncate max-w-[100px]">
+                        {log.location.name}
+                      </td>
+                      <td className="px-3 py-2 text-right font-mono">
+                        <span className={`flex items-center justify-end gap-1 ${log.precipitation_probability && log.precipitation_probability > 30 ? 'text-blue-400 font-bold' : 'text-zinc-500'}`}>
+                          {log.precipitation_probability !== null ? `${log.precipitation_probability}%` : '-'}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2 text-right font-mono text-zinc-300">
+                        {log.temperature_min}° <span className="text-zinc-500">/</span> {log.temperature_max}°
+                      </td>
+                    </tr>
+                  ));
+                })()}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
