@@ -297,6 +297,200 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             >
               <span>IR A MESA</span>
               <ArrowRight className="w-3 h-3" />
+        {summary && summary.pending_reconciliation_count > 0 && (
+          <button
+            onClick={onNavigateToReconciliation}
+            className="flex items-center gap-2 self-start sm:self-auto px-4 py-2 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-medium hover:bg-zinc-700 transition-colors"
+          >
+            <span className="font-mono">{summary.pending_reconciliation_count}</span>
+            <span>movimientos pendientes</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Card 1: Gastos */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
+            <span>Gastos Registrados</span>
+            <TrendingDown className="w-4 h-4 text-zinc-500" />
+          </div>
+          <div className="text-2xl font-mono text-zinc-100 mt-3">
+            ${(summary?.total_expense || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          </div>
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">
+            Mercado Pago & manuales
+          </div>
+        </div>
+
+        {/* Card 2: Ingresos */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
+            <span>Ingresos Totales</span>
+            <TrendingUp className="w-4 h-4 text-zinc-500" />
+          </div>
+          <div className="text-2xl font-mono text-zinc-100 mt-3">
+            ${(summary?.total_income || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          </div>
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">
+            Entradas y cobros
+          </div>
+        </div>
+
+        {/* Card 3: Balance Neto */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
+            <span>Balance Neto</span>
+            <DollarSign className="w-4 h-4 text-zinc-500" />
+          </div>
+          <div
+            className={`text-2xl font-mono mt-3 ${
+              (summary?.net_balance || 0) >= 0 ? 'text-zinc-100' : 'text-zinc-400'
+            }`}
+          >
+            ${(summary?.net_balance || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          </div>
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">Ingresos menos gastos</div>
+        </div>
+
+        {/* Card 4: Pomodoro de Hoy */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-5 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center justify-between text-zinc-400 text-xs font-medium uppercase tracking-wider">
+            <span>Enfoque de Hoy</span>
+            <Clock className="w-4 h-4 text-zinc-500" />
+          </div>
+          <div className="text-2xl font-mono text-zinc-100 mt-3 flex items-baseline gap-1">
+            {pomodoroStats?.total_minutes || 0} <span className="text-xs font-sans text-zinc-500">MIN</span>
+          </div>
+          <div className="text-[10px] text-zinc-500 mt-2 font-mono uppercase">
+            {pomodoroStats?.total_pomodoros || 0} bloques completados
+          </div>
+        </div>
+      </div>
+
+      {/* Main Grid: Focus Widget + Distribution */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Live Focus Widget */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-md p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-zinc-100 uppercase tracking-wider flex items-center gap-2">
+                <Clock className="w-4 h-4 text-zinc-400" />
+                Temporizador
+              </h2>
+              <span className="text-[10px] px-2 py-0.5 rounded-sm bg-zinc-800 text-zinc-300 font-mono uppercase">
+                {activeProject}
+              </span>
+            </div>
+            <p className="text-xs text-zinc-500 mt-2">
+              Sesión de enfoque. Guardado automático.
+            </p>
+          </div>
+
+          <div className="my-8 text-center">
+            <div className="text-6xl font-mono tracking-tight text-zinc-100">
+              {formatTime(timerSeconds)}
+            </div>
+            <div className="mt-4 flex items-center justify-center">
+              <select
+                value={activeProject}
+                onChange={(e) => setActiveProject(e.target.value)}
+                className="bg-zinc-950 text-zinc-300 border border-zinc-800 rounded-sm px-2.5 py-1.5 text-xs font-mono uppercase tracking-wider focus:outline-none focus:border-zinc-700"
+              >
+                <option value="Personal OS">Personal OS</option>
+                <option value="Trabajo">Trabajo</option>
+                <option value="Estudio">Estudio</option>
+                <option value="Lectura">Lectura</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => setIsActive(!isActive)}
+              className={`flex items-center gap-2 px-5 py-2 rounded-md font-mono text-xs uppercase tracking-wider transition-colors border ${
+                isActive
+                  ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border-zinc-700'
+                  : 'bg-zinc-100 hover:bg-white text-zinc-950 border-zinc-100'
+              }`}
+            >
+              {isActive ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              <span>{isActive ? 'PAUSAR' : 'INICIAR'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setIsActive(false);
+                setTimerSeconds(25 * 60);
+              }}
+              className="p-2 rounded-md bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors"
+              title="Reiniciar"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+
+            <button
+              disabled={isSavingPomo}
+              onClick={handleCompletePomodoro}
+              className="px-4 py-2 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-mono uppercase tracking-wider hover:bg-zinc-800 hover:text-zinc-100 transition-colors flex items-center gap-2"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>GUARDAR</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Categories Breakdown */}
+        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-md p-6 flex flex-col justify-between">
+          <div>
+            <h2 className="text-sm font-semibold text-zinc-100 uppercase tracking-wider flex items-center gap-2">
+              <TrendingDown className="w-4 h-4 text-zinc-400" />
+              Distribución de Gastos
+            </h2>
+            <p className="text-xs text-zinc-500 mt-2">
+              Desglose acumulado de gastos asignados en Mercado Pago.
+            </p>
+          </div>
+
+          <div className="my-6 space-y-4">
+            {summary && Object.keys(summary.by_category).length > 0 ? (
+              Object.entries(summary.by_category).map(([cat, amount]) => {
+                const total = summary.total_expense || 1;
+                const percentage = Math.round((amount / total) * 100);
+                return (
+                  <div key={cat} className="space-y-1.5">
+                    <div className="flex justify-between text-xs font-mono uppercase tracking-wider">
+                      <span className="text-zinc-400">{cat}</span>
+                      <span className="text-zinc-300">
+                        ${amount.toLocaleString('es-AR')} <span className="text-zinc-500 ml-1">[{percentage}%]</span>
+                      </span>
+                    </div>
+                    <div className="h-1 w-full bg-zinc-950 rounded-none overflow-hidden border border-zinc-800">
+                      <div
+                        className="h-full bg-zinc-300"
+                        style={{ width: `${Math.min(percentage, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-zinc-600 text-xs font-mono uppercase tracking-widest">
+                SIN DATOS DE CATEGORÍAS
+              </div>
+            )}
+          </div>
+
+          <div className="pt-4 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-500 font-mono uppercase tracking-wider">
+            <span>Auto-conciliación ACTIVA</span>
+            <button
+              onClick={onNavigateToReconciliation}
+              className="text-zinc-300 hover:text-zinc-100 font-medium flex items-center gap-1 transition-colors"
+            >
+              <span>IR A MESA</span>
+              <ArrowRight className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -336,7 +530,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 if (isAfter5PM) {
                   targetObj.setDate(targetObj.getDate() + 1);
                 }
-                const targetDateStr = targetObj.toLocaleDateString('en-CA');
+                const year = targetObj.getFullYear();
+                const month = String(targetObj.getMonth() + 1).padStart(2, '0');
+                const day = String(targetObj.getDate()).padStart(2, '0');
+                const targetDateStr = `${year}-${month}-${day}`;
                 
                 // Get logs for target date, limited to 2 unique locations
                 const logsForDate = weatherLogs.filter(l => l.log_date === targetDateStr);
