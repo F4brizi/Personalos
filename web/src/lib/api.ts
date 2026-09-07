@@ -75,6 +75,28 @@ export interface AiQuota {
   days_until_reset: number;
 }
 
+export interface WeatherLocation {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface WeatherLog {
+  id: string;
+  location_id: string;
+  log_date: string;
+  temperature_max: number;
+  temperature_min: number;
+  precipitation_probability: number;
+  humidity: number | null;
+  weather_condition: string;
+  created_at: string;
+  location: WeatherLocation;
+}
+
 const API_BASE = '/api/v1';
 
 export const api = {
@@ -212,6 +234,13 @@ export const api = {
   getAiQuotas: async (): Promise<AiQuota[]> => {
     const res = await fetch(`${API_BASE}/ai/quotas`);
     if (!res.ok) throw new Error('Error al obtener cuotas de IA');
+    return res.json();
+  },
+
+  // Clima / Weather
+  getWeatherLogs: async (): Promise<WeatherLog[]> => {
+    const res = await fetch(`${API_BASE}/weather/logs`);
+    if (!res.ok) throw new Error('Error al obtener logs de clima');
     return res.json();
   }
 };

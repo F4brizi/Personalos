@@ -1,21 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, Droplets, MapPin, Map, Sun } from 'lucide-react';
-import { api } from '../lib/api';
-
-interface WeatherLog {
-  id: string;
-  location_id: string;
-  log_date: string;
-  temperature_max: number;
-  temperature_min: number;
-  precipitation_probability: number;
-  weather_condition: string;
-  location: {
-    name: string;
-    latitude: number;
-    longitude: number;
-  }
-}
+import { api, WeatherLog } from '../lib/api';
 
 export const WeatherView: React.FC = () => {
   const [logs, setLogs] = useState<WeatherLog[]>([]);
@@ -24,8 +9,7 @@ export const WeatherView: React.FC = () => {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/weather/logs`);
-        const data = await response.json();
+        const data = await api.getWeatherLogs();
         setLogs(data);
       } catch (err) {
         console.error(err);
