@@ -260,5 +260,14 @@ export const api = {
       throw new Error(err.detail || 'Error al crear ubicación meteorológica');
     }
     return res.json();
+  },
+
+  deleteWeatherLocation: async (id: string, deleteLogs: boolean = true): Promise<void> => {
+    const res = await fetch(`${API_BASE}/weather/locations/${id}?delete_logs=${deleteLogs}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      throw new Error('Error al eliminar ubicación');
+    }
   }
 };

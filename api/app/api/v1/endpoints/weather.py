@@ -51,3 +51,20 @@ async def list_logs(db: AsyncSession = Depends(get_db)):
     query = select(WeatherLog).options(selectinload(WeatherLog.location)).order_by(WeatherLog.log_date.desc())
     result = await db.execute(query)
     return result.scalars().all()
+
+from sqlalchemy import delete
+
+@router.delete("/locations/{location_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_location(location_id: uuid.UUID, delete_logs: bool = False, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(WeatherLocation).where(WeatherLocation.id == location_id))
+    loc = result.scalar_one_or_none()
+    
+    if not loc:
+        raise HTTPException(status_code=404, detail="Location not found")
+        
+    if delete_logs:
+        await db.execute(delete(WeatherLog).where(WeatherLog.location_id == location_id))
+        
+    await db.execute(delete(WeatherLocation).where(WeatherLocation.id == location_id))
+    await db.commit()
+    return None

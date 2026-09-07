@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Cloud, Droplets, MapPin, Map, Sun, Calendar, Link as LinkIcon, Database, Plus } from 'lucide-react';
+import { Cloud, Droplets, MapPin, Map, Sun, Calendar, Link as LinkIcon, Database, Plus, Trash2, Download } from 'lucide-react';
 import { api } from '../lib/api';
 import type { WeatherLog } from '../lib/api';
 
@@ -51,13 +51,57 @@ export const WeatherView: React.FC = () => {
       setNewLocName('');
       setNewLocLat('');
       setNewLocLon('');
-      // Give ARQ worker 2 seconds to fetch the data, then reload
       setTimeout(() => fetchWeather(), 2000);
     } catch (err: any) {
       alert(err.message || "Error al agregar zona");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleDeleteLocation = async (locationId: string, locationName: string) => {
+    const confirmDelete = window.confirm(`¿Estás seguro de que querés borrar la zona ${locationName}?`);
+    if (!confirmDelete) return;
+
+    const deleteLogs = window.confirm(`¿Querés borrar también todo el historial climático de ${locationName}? (Aceptar = Sí, Cancelar = Conservar historial)`);
+
+    try {
+      await api.deleteWeatherLocation(locationId, deleteLogs);
+      fetchWeather();
+    } catch (err: any) {
+      alert(err.message || "Error al borrar zona");
+    }
+  };
+
+  const exportToCSV = () => {
+    if (filteredLogs.length === 0) {
+      alert("No hay datos para exportar.");
+      return;
+    }
+    
+    const headers = ["Fecha", "Zona", "Condicion", "Temp Max", "Temp Min", "Prob Lluvia %"];
+    const rows = filteredLogs.map(log => [
+      log.log_date,
+      log.location.name,
+      log.weather_condition,
+      log.temperature_max,
+      log.temperature_min,
+      log.precipitation_probability
+    ]);
+    
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `historial_clima_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // Agrupar logs por location name (Solo para las tarjetas superiores)
@@ -120,9 +164,18 @@ export const WeatherView: React.FC = () => {
                 <Sun className="w-16 h-16" />
               </div>
               
-              <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-4 h-4 text-emerald-400" />
-                <h3 className="font-mono text-sm font-bold text-zinc-100 uppercase tracking-wider">{log.location.name}</h3>
+              <div className="flex items-center justify-between gap-2 mb-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-emerald-400" />
+                  <h3 className="font-mono text-sm font-bold text-zinc-100 uppercase tracking-wider">{log.location.name}</h3>
+                </div>
+                <button 
+                  onClick={() => handleDeleteLocation(log.location.id, log.location.name)}
+                  className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-sm transition-colors z-10"
+                  title="Eliminar zona"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -211,8 +264,14 @@ export const WeatherView: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex flex-col gap-1">
-             <label className="text-[10px] font-mono text-zinc-500 uppercase opacity-0">Add</label>
+          <div className="flex items-center gap-2">
+             <button 
+                onClick={exportToCSV}
+                className="text-xs font-mono text-zinc-400 hover:text-zinc-100 bg-zinc-800 px-3 py-1.5 rounded-sm transition-colors border border-zinc-700 hover:border-zinc-500 flex items-center gap-2"
+              >
+                <Download className="w-3 h-3" />
+                CSV
+              </button>
              <button 
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="text-xs font-mono text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 px-3 py-1.5 rounded-sm transition-colors border border-emerald-500/20 hover:border-emerald-500/50 flex items-center gap-2"
