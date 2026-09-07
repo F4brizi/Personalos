@@ -46,7 +46,7 @@ async def fetch_weather_for_location(session: AsyncSession, location: WeatherLoc
         "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum",
         "timezone": "America/Argentina/Buenos_Aires",
         "past_days": 2,
-        "forecast_days": 1
+        "forecast_days": 2
     }
     
     async with httpx.AsyncClient() as client:
@@ -145,7 +145,7 @@ async def backfill_historical_weather(ctx, location_id: str, days_back: int):
             "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum",
             "timezone": "America/Argentina/Buenos_Aires",
             "past_days": days_back,
-            "forecast_days": 1
+            "forecast_days": 2
         }
         
         async with httpx.AsyncClient() as client:
