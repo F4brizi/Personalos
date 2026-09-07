@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, Droplets, MapPin, Map, Sun } from 'lucide-react';
-import { api, WeatherLog } from '../lib/api';
+import { api } from '../lib/api';
+import type { WeatherLog } from '../lib/api';
 
 export const WeatherView: React.FC = () => {
   const [logs, setLogs] = useState<WeatherLog[]>([]);
