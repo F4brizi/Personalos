@@ -88,6 +88,18 @@ const DEFAULT_APPS: EcosystemApp[] = [
     gradient: 'from-zinc-800 to-zinc-700',
   },
   {
+    id: 'nocodb-studio',
+    name: 'NocoDB (Data Explorer)',
+    category: 'data',
+    description: 'Explorador visual de bases de datos estilo Airtable para editar tracking, gastos y más.',
+    status: 'online',
+    statusText: 'Localhost:8080',
+    url: 'http://localhost:8080',
+    tags: ['Airtable', 'NocoDB', 'PostgreSQL'],
+    icon: 'Database',
+    gradient: 'from-zinc-800 to-zinc-700',
+  },
+  {
     id: 'db',
     name: 'Data Studio (SQL)',
     category: 'infra',
