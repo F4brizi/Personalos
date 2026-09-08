@@ -16,7 +16,7 @@ class GeminiProvider(BaseAIProvider):
             self.client = None
         else:
             self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        self.model_name = "gemini-2.5-flash" # o pro
+        self.model_name = "gemini-3.6-flash" # o pro
 
     async def generate_response(self, session: AsyncSession, thread_id: uuid.UUID, prompt: str) -> str:
         if not self.client:
