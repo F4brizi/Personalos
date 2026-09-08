@@ -13,6 +13,8 @@ class Settings(BaseSettings):
 
     # CORS
     CORS_ORIGINS: Union[List[str], str] = ["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:8000"]
+    FRONTEND_URL: str = ""
+    NGROK_DOMAIN: str = ""
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
@@ -50,6 +52,9 @@ class Settings(BaseSettings):
     # Telegram Bot
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_ALLOWED_USER_ID: str = ""
+
+    # AI Providers
+    GEMINI_API_KEY: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",

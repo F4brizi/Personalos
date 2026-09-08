@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: personal_os_db
+    container_name: pos-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-personal_os}
@@ -21,7 +21,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: personal_os_redis
+    container_name: pos-redis
     restart: unless-stopped
     ports:
       - "${REDIS_PORT:-6379}:6379"
@@ -39,7 +39,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: personal_os_api
+    container_name: pos-api
     restart: unless-stopped
     env_file:
       - .env
@@ -59,7 +59,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: personal_os_worker
+    container_name: pos-worker
     restart: unless-stopped
     command: arq app.worker.WorkerSettings
     env_file:
@@ -78,7 +78,7 @@ services:
     build:
       context: ./bot
       dockerfile: Dockerfile
-    container_name: personal_os_bot
+    container_name: pos-bot
     restart: unless-stopped
     env_file:
       - .env
@@ -95,7 +95,7 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
-    container_name: personal_os_web
+    container_name: pos-web
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -111,7 +111,7 @@ services:
 
   db_viewer:
     image: sosedoff/pgweb
-    container_name: personal_os_db_viewer
+    container_name: pos-db-viewer
     restart: unless-stopped
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER:-personal_os}:${POSTGRES_PASSWORD:-personal_os_secret}@db:5432/${POSTGRES_DB:-personal_os_db}?sslmode=disable
@@ -122,6 +122,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - personal_os_network
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: pos-ngrok
+    restart: unless-stopped
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    command:
+      - "http"
+      - "api:8000"
+      - "--domain=${NGROK_DOMAIN}"
+    depends_on:
+      - api
     networks:
       - personal_os_network
 
