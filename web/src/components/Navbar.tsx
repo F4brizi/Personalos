@@ -1,10 +1,10 @@
 import React from 'react';
-import { LayoutDashboard, Receipt, Timer, ShieldCheck, AlertCircle, LayoutGrid, BrainCircuit, Book, Cloud } from 'lucide-react';
+import { LayoutDashboard, Receipt, Timer, ShieldCheck, AlertCircle, LayoutGrid, BrainCircuit, Book, Cloud, MessageSquare } from 'lucide-react';
 import type { HealthStatus } from '../lib/api';
 
 interface NavbarProps {
-  currentTab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'wiki' | 'weather';
-  setCurrentTab: (tab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'wiki' | 'weather') => void;
+  currentTab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'chat' | 'wiki' | 'weather';
+  setCurrentTab: (tab: 'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'chat' | 'wiki' | 'weather') => void;
   health: HealthStatus | null;
   pendingCount: number;
 }
@@ -105,6 +105,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <BrainCircuit className="w-3.5 h-3.5" />
               <span>AI Lab</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentTab('chat')}
+              className={`flex items-center space-x-2 px-3 py-1.5 rounded-sm transition-colors text-xs font-mono uppercase tracking-widest ${
+                currentTab === 'chat'
+                  ? 'bg-zinc-100 text-zinc-950 font-bold'
+                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+              }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>Chat</span>
             </button>
 
             <button

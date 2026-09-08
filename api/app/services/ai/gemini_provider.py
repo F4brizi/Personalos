@@ -45,22 +45,28 @@ class GeminiProvider(BaseAIProvider):
         # 4. Formatear historial para google-genai
         contents = []
         for msg in history_messages:
-            # role puede ser user o model
             role = "user" if msg.role == "user" else "model"
             contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg.content)]))
         
-        # Añadir el prompt actual
-        contents.append(types.Content(role="user", parts=[types.Part.from_text(text=prompt)]))
-
-        # 5. Llamar a la API de Gemini
+        # 5. Configurar herramientas y llamar a Gemini
+        from app.services.ai.obsidian_tools import search_obsidian, read_obsidian_note, append_obsidian_note
+        tools = [search_obsidian, read_obsidian_note, append_obsidian_note]
+        
         try:
-            # Si usamos async podemos hacer llamadas no bloqueantes (dependiendo de la librería)
-            # Por simplicidad en este ejemplo de SDK beta, se puede hacer de forma bloqueante 
-            # pero lo ideal en FastAPI es que la llamada de red sea asíncrona si hay soporte
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=contents
+            config = types.GenerateContentConfig(
+                tools=tools,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
             )
+            
+            # Crear un objeto de chat con el historial previo
+            chat = self.client.chats.create(
+                model=self.model_name,
+                history=contents,
+                config=config
+            )
+            
+            # Enviar el nuevo prompt
+            response = chat.send_message(prompt)
             reply_text = response.text
         except Exception as e:
             reply_text = f"Error llamando a Gemini: {str(e)}"

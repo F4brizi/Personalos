@@ -7,6 +7,7 @@ import { PomodoroView } from './components/PomodoroView';
 import { AiAnalyticsView } from './components/AiAnalyticsView';
 import { WikiView } from './components/WikiView';
 import { WeatherView } from './components/WeatherView';
+import { Chat } from './pages/Chat';
 import { api } from './lib/api';
 import type {
   HealthStatus,
@@ -18,7 +19,7 @@ import type {
 import { Loader2 } from 'lucide-react';
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState<'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'wiki' | 'weather'>('hub');
+  const [currentTab, setCurrentTab] = useState<'hub' | 'dashboard' | 'reconciliation' | 'pomodoro' | 'ai' | 'chat' | 'wiki' | 'weather'>('hub');
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<TransactionSummary | null>(null);
@@ -112,6 +113,10 @@ export function App() {
 
             {currentTab === 'ai' && (
               <AiAnalyticsView />
+            )}
+
+            {currentTab === 'chat' && (
+              <Chat />
             )}
 
             {currentTab === 'wiki' && (

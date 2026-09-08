@@ -277,5 +277,32 @@ export const api = {
     if (!res.ok) {
       throw new Error('Error al eliminar ubicación');
     }
+  },
+
+  // AI Chat
+  createAiThread: async (title: string): Promise<{id: string, title: string}> => {
+    const res = await apiFetch(`${API_BASE}/ai/chat/thread`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title }),
+    });
+    if (!res.ok) throw new Error('Error al crear chat');
+    return res.json();
+  },
+
+  getAiThread: async (threadId: string): Promise<{id: string, title: string, messages: any[]}> => {
+    const res = await apiFetch(`${API_BASE}/ai/chat/thread/${threadId}`);
+    if (!res.ok) throw new Error('Error al obtener chat');
+    return res.json();
+  },
+
+  sendAiMessage: async (threadId: string, content: string): Promise<{response: string}> => {
+    const res = await apiFetch(`${API_BASE}/ai/chat/thread/${threadId}/message`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content }),
+    });
+    if (!res.ok) throw new Error('Error al enviar mensaje a la IA');
+    return res.json();
   }
 };
