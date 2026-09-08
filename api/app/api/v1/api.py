@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import health, transactions, pomodoro, ai_usage, weather, ai
+from app.api.v1.endpoints import health, transactions, pomodoro, ai_usage, weather, ai, obsidian
 
 api_router = APIRouter()
 
@@ -9,3 +9,5 @@ api_router.include_router(pomodoro.router, prefix="/pomodoro", tags=["pomodoro"]
 api_router.include_router(ai_usage.router, prefix="/ai/usage", tags=["ai_usage"])
 api_router.include_router(weather.router, prefix="/weather", tags=["weather"])
 api_router.include_router(ai.router, prefix="/ai/chat", tags=["ai_chat"])
+api_router.include_router(obsidian.router, prefix="/obsidian", tags=["obsidian"])
+

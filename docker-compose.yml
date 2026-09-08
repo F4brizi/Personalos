@@ -47,6 +47,7 @@ services:
       - "${API_PORT:-8000}:8000"
     volumes:
       - ./api:/app
+      - ${OBSIDIAN_VAULT_PATH}:/obsidian
     depends_on:
       db:
         condition: service_healthy
@@ -66,6 +67,7 @@ services:
       - .env
     volumes:
       - ./api:/app
+      - ${OBSIDIAN_VAULT_PATH}:/obsidian
     depends_on:
       db:
         condition: service_healthy
