@@ -50,8 +50,8 @@ class GeminiProvider(BaseAIProvider):
         
         # 5. Configurar herramientas y llamar a Gemini
         from app.services.ai.obsidian_tools import search_obsidian, read_obsidian_note, append_obsidian_note, list_obsidian_notes
-        from app.services.ai.core_tools import record_expense, schedule_meeting
-        tools = [search_obsidian, read_obsidian_note, append_obsidian_note, list_obsidian_notes, record_expense, schedule_meeting]
+        from app.services.ai.core_tools import record_expense, schedule_meeting, record_daily_survey
+        tools = [search_obsidian, read_obsidian_note, append_obsidian_note, list_obsidian_notes, record_expense, schedule_meeting, record_daily_survey]
         
         try:
             config = types.GenerateContentConfig(
@@ -103,8 +103,8 @@ class GeminiProvider(BaseAIProvider):
             contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg.content)]))
 
         from app.services.ai.obsidian_tools import search_obsidian, read_obsidian_note, append_obsidian_note, list_obsidian_notes
-        from app.services.ai.core_tools import record_expense, schedule_meeting
-        tools = [search_obsidian, read_obsidian_note, append_obsidian_note, list_obsidian_notes, record_expense, schedule_meeting]
+        from app.services.ai.core_tools import record_expense, schedule_meeting, record_daily_survey
+        tools = [search_obsidian, read_obsidian_note, append_obsidian_note, list_obsidian_notes, record_expense, schedule_meeting, record_daily_survey]
         
         try:
             config = types.GenerateContentConfig(

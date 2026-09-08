@@ -29,9 +29,25 @@ services:
       - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 5
+    networks:
+      - personal_os_network
+
+  nocodb:
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NC_DB: "pg://db:5432?u=${POSTGRES_USER:-personal_os}&p=${POSTGRES_PASSWORD:-personal_os_secret}&d=${POSTGRES_DB:-personal_os_db}"
+    image: nocodb/nocodb:latest
+    container_name: pos-nocodb
+    ports:
+      - "8080:8080"
+    restart: always
+    volumes:
+      - nc_data:/usr/app/data/
     networks:
       - personal_os_network
 
@@ -145,6 +161,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  nc_data:
 
 networks:
   personal_os_network:

@@ -224,7 +224,11 @@ async def proactive_telegram_bot_task(ctx):
         return
         
     client = genai.Client(api_key=api_key)
-    prompt = "Es de noche (21:00). Escribe un mensaje corto (máximo 2 oraciones) preguntándole a Fabrizio cómo estuvo su dieta hoy, cuántas calorías consumió, cuántos kilómetros corrió, y cómo está su humor."
+    prompt = """Es de noche (21:00). Escribe un mensaje amigable pidiéndole a Fabrizio su reporte del día. 
+Recordale que te tiene que decir: 
+1. Puntuación del 1 al 10 de: facilidad al despertar, calidad de sueño, concentración y motivación.
+2. Cantidades: cuántos pomodoros hizo, cuántas horas de mantenimiento, horas de sueño, horas de trabajo y horas desperdiciadas.
+3. Descripciones: qué ejercicio hizo y qué comida consumió hoy."""
     
     try:
         response = client.models.generate_content(
