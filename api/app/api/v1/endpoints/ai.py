@@ -48,3 +48,19 @@ async def send_message(thread_id: uuid.UUID, msg_in: AiMessageCreate, db: AsyncS
         return {"response": reply}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+from fastapi import File, UploadFile
+
+@router.post("/thread/{thread_id}/audio")
+async def send_audio(thread_id: uuid.UUID, file: UploadFile = File(...), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(AiThread).where(AiThread.id == thread_id))
+    if not result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Thread no encontrado")
+        
+    try:
+        audio_bytes = await file.read()
+        mime_type = file.content_type or "audio/webm"
+        reply = await ai_provider.generate_response_audio(session=db, thread_id=thread_id, audio_bytes=audio_bytes, mime_type=mime_type)
+        return {"response": reply}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

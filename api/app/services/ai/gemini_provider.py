@@ -77,3 +77,48 @@ class GeminiProvider(BaseAIProvider):
         await session.commit()
         
         return reply_text
+
+    async def generate_response_audio(self, session: AsyncSession, thread_id: uuid.UUID, audio_bytes: bytes, mime_type: str) -> str:
+        if not self.client:
+            raise ValueError("GEMINI_API_KEY no está configurada")
+        
+        result = await session.execute(select(AiThread).where(AiThread.id == thread_id))
+        if not result.scalar_one_or_none():
+            raise ValueError("Thread no encontrado")
+
+        msg_result = await session.execute(
+            select(AiMessage).where(AiMessage.thread_id == thread_id).order_by(AiMessage.created_at)
+        )
+        history_messages = msg_result.scalars().all()
+
+        user_msg = AiMessage(thread_id=thread_id, role="user", content="[Nota de voz]")
+        session.add(user_msg)
+        await session.commit()
+        await session.refresh(user_msg)
+
+        contents = []
+        for msg in history_messages:
+            role = "user" if msg.role == "user" else "model"
+            contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg.content)]))
+
+        from app.services.ai.obsidian_tools import search_obsidian, read_obsidian_note, append_obsidian_note
+        tools = [search_obsidian, read_obsidian_note, append_obsidian_note]
+        
+        try:
+            config = types.GenerateContentConfig(
+                tools=tools,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
+            )
+            chat = self.client.chats.create(model=self.model_name, history=contents, config=config)
+            
+            audio_part = types.Part.from_bytes(data=audio_bytes, mime_type=mime_type)
+            response = chat.send_message(audio_part)
+            reply_text = response.text
+        except Exception as e:
+            reply_text = f"Error llamando a Gemini con audio: {str(e)}"
+
+        model_msg = AiMessage(thread_id=thread_id, role="model", content=reply_text)
+        session.add(model_msg)
+        await session.commit()
+        
+        return reply_text

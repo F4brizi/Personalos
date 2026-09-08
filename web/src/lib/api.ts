@@ -291,6 +291,201 @@ export const api = {
   },
 
   getAiThread: async (threadId: string): Promise<{id: string, title: string, messages: any[]}> => {
+}
+
+const API_BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/v1` : '/api/v1';
+
+async function apiFetch(url: string | URL, options?: RequestInit) {
+  const headers = new Headers(options?.headers);
+  headers.set('ngrok-skip-browser-warning', 'true');
+  return fetch(url, { ...options, headers });
+}
+
+export const api = {
+  // Health
+  getHealth: async (): Promise<HealthStatus> => {
+    const res = await apiFetch(`${API_BASE}/health`);
+    if (!res.ok) throw new Error('Error al consultar salud del backend');
+    return res.json();
+  },
+
+  // Finanzas / Transacciones
+  getTransactions: async (params?: {
+    is_reconciled?: boolean;
+    category?: string;
+    limit?: number;
+  }): Promise<Transaction[]> => {
+    // If API_BASE is absolute (e.g. https://ngrok...), the second parameter (origin) is ignored.
+    const url = new URL(`${API_BASE}/transactions`, window.location.origin);
+    if (params?.is_reconciled !== undefined) {
+      url.searchParams.set('is_reconciled', String(params.is_reconciled));
+    }
+    if (params?.category) {
+      url.searchParams.set('category', params.category);
+    }
+    if (params?.limit) {
+      url.searchParams.set('limit', String(params.limit));
+    }
+    const res = await apiFetch(url.toString());
+    if (!res.ok) throw new Error('Error al listar transacciones');
+    return res.json();
+  },
+
+  getSummary: async (): Promise<TransactionSummary> => {
+    const res = await apiFetch(`${API_BASE}/transactions/summary`);
+    if (!res.ok) throw new Error('Error al obtener resumen de transacciones');
+    return res.json();
+  },
+
+  createTransaction: async (data: {
+    date: string;
+    amount: number;
+    currency?: string;
+    description: string;
+    counterparty?: string;
+    category?: string;
+    payment_method?: string;
+    type?: string;
+    is_reconciled?: boolean;
+    notes?: string;
+  }): Promise<Transaction> => {
+    const res = await apiFetch(`${API_BASE}/transactions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Error al crear transacción');
+    return res.json();
+  },
+
+  updateTransaction: async (
+    id: string,
+    data: {
+      category?: string;
+      is_reconciled?: boolean;
+      notes?: string;
+      description?: string;
+    }
+  ): Promise<Transaction> => {
+    const res = await apiFetch(`${API_BASE}/transactions/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Error al actualizar transacción');
+    return res.json();
+  },
+
+  uploadMercadoPago: async (file: File): Promise<{
+    filename: string;
+    processed_rows: number;
+    imported_count: number;
+    skipped_duplicates: number;
+    parser_warnings: string[];
+  }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await apiFetch(`${API_BASE}/transactions/upload-mercadopago`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail?.message || 'Error al subir extracto de Mercado Pago');
+    }
+    return res.json();
+  },
+
+  // Pomodoro
+  getTodayPomodoroStats: async (): Promise<PomodoroTodayStats> => {
+    const res = await apiFetch(`${API_BASE}/pomodoro/stats/today`);
+    if (!res.ok) throw new Error('Error al obtener estadísticas de pomodoro');
+    return res.json();
+  },
+
+  getPomodoros: async (limit = 20): Promise<PomodoroSession[]> => {
+    const res = await apiFetch(`${API_BASE}/pomodoro?limit=${limit}`);
+    if (!res.ok) throw new Error('Error al listar pomodoros');
+    return res.json();
+  },
+
+  createPomodoro: async (data: {
+    start_time: string;
+    duration_minutes: number;
+    project_name: string;
+    tag?: string;
+    completed: boolean;
+    interruptions?: number;
+    notes?: string;
+  }): Promise<PomodoroSession> => {
+    const res = await apiFetch(`${API_BASE}/pomodoro`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('Error al registrar pomodoro');
+    return res.json();
+  },
+
+  // AI Usage
+  getAiStats: async (days = 30): Promise<AiUsageStats> => {
+    const res = await apiFetch(`${API_BASE}/ai/usage/stats?days=${days}`);
+    if (!res.ok) throw new Error('Error al obtener estadísticas de IA');
+    return res.json();
+  },
+
+  getAiQuotas: async (): Promise<AiQuota[]> => {
+    const res = await apiFetch(`${API_BASE}/ai/usage/quotas`);
+    if (!res.ok) throw new Error('Error al obtener cuotas de IA');
+    return res.json();
+  },
+
+  // Clima / Weather
+  getWeatherLogs: async (): Promise<WeatherLog[]> => {
+    const res = await apiFetch(`${API_BASE}/weather/logs`);
+    if (!res.ok) throw new Error('Error al obtener logs de clima');
+    return res.json();
+  },
+
+  createWeatherLocation: async (data: {
+    name: string;
+    latitude: number;
+    longitude: number;
+    historical_days?: number;
+  }): Promise<WeatherLocation> => {
+    const res = await apiFetch(`${API_BASE}/weather/locations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || 'Error al crear ubicación meteorológica');
+    }
+    return res.json();
+  },
+
+  deleteWeatherLocation: async (id: string, deleteLogs: boolean = true): Promise<void> => {
+    const res = await apiFetch(`${API_BASE}/weather/locations/${id}?delete_logs=${deleteLogs}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      throw new Error('Error al eliminar ubicación');
+    }
+  },
+
+  // AI Chat
+  createAiThread: async (title: string): Promise<{id: string, title: string}> => {
+    const res = await apiFetch(`${API_BASE}/ai/chat/thread`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title }),
+    });
+    if (!res.ok) throw new Error('Error al crear chat');
+    return res.json();
+  },
+
+  getAiThread: async (threadId: string): Promise<{id: string, title: string, messages: any[]}> => {
     const res = await apiFetch(`${API_BASE}/ai/chat/thread/${threadId}`);
     if (!res.ok) throw new Error('Error al obtener chat');
     return res.json();
@@ -303,6 +498,18 @@ export const api = {
       body: JSON.stringify({ content }),
     });
     if (!res.ok) throw new Error('Error al enviar mensaje a la IA');
+    return res.json();
+  },
+
+  sendAiAudio: async (threadId: string, audioBlob: Blob): Promise<{response: string}> => {
+    const formData = new FormData();
+    formData.append('file', audioBlob, 'audio.webm');
+    
+    const res = await apiFetch(`${API_BASE}/ai/chat/thread/${threadId}/audio`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error('Error al enviar audio a la IA');
     return res.json();
   }
 };
