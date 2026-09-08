@@ -120,7 +120,8 @@ export const api = {
     category?: string;
     limit?: number;
   }): Promise<Transaction[]> => {
-    const url = new URL(`${window.location.origin}${API_BASE}/transactions`);
+    // If API_BASE is absolute (e.g. https://ngrok...), the second parameter (origin) is ignored.
+    const url = new URL(`${API_BASE}/transactions`, window.location.origin);
     if (params?.is_reconciled !== undefined) {
       url.searchParams.set('is_reconciled', String(params.is_reconciled));
     }
@@ -233,13 +234,13 @@ export const api = {
 
   // AI Usage
   getAiStats: async (days = 30): Promise<AiUsageStats> => {
-    const res = await apiFetch(`${API_BASE}/ai/stats?days=${days}`);
+    const res = await apiFetch(`${API_BASE}/ai/usage/stats?days=${days}`);
     if (!res.ok) throw new Error('Error al obtener estadísticas de IA');
     return res.json();
   },
 
   getAiQuotas: async (): Promise<AiQuota[]> => {
-    const res = await apiFetch(`${API_BASE}/ai/quotas`);
+    const res = await apiFetch(`${API_BASE}/ai/usage/quotas`);
     if (!res.ok) throw new Error('Error al obtener cuotas de IA');
     return res.json();
   },
