@@ -22,7 +22,13 @@ async def create_thread(thread_in: AiThreadCreate, db: AsyncSession = Depends(ge
     db.add(new_thread)
     await db.commit()
     await db.refresh(new_thread)
-    return new_thread
+    # Return as dict to bypass lazy load
+    return {
+        "id": new_thread.id,
+        "title": new_thread.title,
+        "created_at": new_thread.created_at,
+        "messages": []
+    }
 
 @router.get("/thread/{thread_id}", response_model=AiThreadResponse)
 async def get_thread(thread_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
