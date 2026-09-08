@@ -98,12 +98,18 @@ export interface WeatherLog {
   location: WeatherLocation;
 }
 
-const API_BASE = '/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/v1` : '/api/v1';
+
+async function apiFetch(url: string | URL, options?: RequestInit) {
+  const headers = new Headers(options?.headers);
+  headers.set('ngrok-skip-browser-warning', 'true');
+  return fetch(url, { ...options, headers });
+}
 
 export const api = {
   // Health
   getHealth: async (): Promise<HealthStatus> => {
-    const res = await fetch(`${API_BASE}/health`);
+    const res = await apiFetch(`${API_BASE}/health`);
     if (!res.ok) throw new Error('Error al consultar salud del backend');
     return res.json();
   },
@@ -124,13 +130,13 @@ export const api = {
     if (params?.limit) {
       url.searchParams.set('limit', String(params.limit));
     }
-    const res = await fetch(url.toString());
+    const res = await apiFetch(url.toString());
     if (!res.ok) throw new Error('Error al listar transacciones');
     return res.json();
   },
 
   getSummary: async (): Promise<TransactionSummary> => {
-    const res = await fetch(`${API_BASE}/transactions/summary`);
+    const res = await apiFetch(`${API_BASE}/transactions/summary`);
     if (!res.ok) throw new Error('Error al obtener resumen de transacciones');
     return res.json();
   },
@@ -147,7 +153,7 @@ export const api = {
     is_reconciled?: boolean;
     notes?: string;
   }): Promise<Transaction> => {
-    const res = await fetch(`${API_BASE}/transactions`, {
+    const res = await apiFetch(`${API_BASE}/transactions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -165,7 +171,7 @@ export const api = {
       description?: string;
     }
   ): Promise<Transaction> => {
-    const res = await fetch(`${API_BASE}/transactions/${id}`, {
+    const res = await apiFetch(`${API_BASE}/transactions/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -183,7 +189,7 @@ export const api = {
   }> => {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch(`${API_BASE}/transactions/upload-mercadopago`, {
+    const res = await apiFetch(`${API_BASE}/transactions/upload-mercadopago`, {
       method: 'POST',
       body: formData,
     });
@@ -196,13 +202,13 @@ export const api = {
 
   // Pomodoro
   getTodayPomodoroStats: async (): Promise<PomodoroTodayStats> => {
-    const res = await fetch(`${API_BASE}/pomodoro/stats/today`);
+    const res = await apiFetch(`${API_BASE}/pomodoro/stats/today`);
     if (!res.ok) throw new Error('Error al obtener estadísticas de pomodoro');
     return res.json();
   },
 
   getPomodoros: async (limit = 20): Promise<PomodoroSession[]> => {
-    const res = await fetch(`${API_BASE}/pomodoro?limit=${limit}`);
+    const res = await apiFetch(`${API_BASE}/pomodoro?limit=${limit}`);
     if (!res.ok) throw new Error('Error al listar pomodoros');
     return res.json();
   },
@@ -216,7 +222,7 @@ export const api = {
     interruptions?: number;
     notes?: string;
   }): Promise<PomodoroSession> => {
-    const res = await fetch(`${API_BASE}/pomodoro`, {
+    const res = await apiFetch(`${API_BASE}/pomodoro`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -227,20 +233,20 @@ export const api = {
 
   // AI Usage
   getAiStats: async (days = 30): Promise<AiUsageStats> => {
-    const res = await fetch(`${API_BASE}/ai/stats?days=${days}`);
+    const res = await apiFetch(`${API_BASE}/ai/stats?days=${days}`);
     if (!res.ok) throw new Error('Error al obtener estadísticas de IA');
     return res.json();
   },
 
   getAiQuotas: async (): Promise<AiQuota[]> => {
-    const res = await fetch(`${API_BASE}/ai/quotas`);
+    const res = await apiFetch(`${API_BASE}/ai/quotas`);
     if (!res.ok) throw new Error('Error al obtener cuotas de IA');
     return res.json();
   },
 
   // Clima / Weather
   getWeatherLogs: async (): Promise<WeatherLog[]> => {
-    const res = await fetch(`${API_BASE}/weather/logs`);
+    const res = await apiFetch(`${API_BASE}/weather/logs`);
     if (!res.ok) throw new Error('Error al obtener logs de clima');
     return res.json();
   },
@@ -251,7 +257,7 @@ export const api = {
     longitude: number;
     historical_days?: number;
   }): Promise<WeatherLocation> => {
-    const res = await fetch(`${API_BASE}/weather/locations`, {
+    const res = await apiFetch(`${API_BASE}/weather/locations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -264,7 +270,7 @@ export const api = {
   },
 
   deleteWeatherLocation: async (id: string, deleteLogs: boolean = true): Promise<void> => {
-    const res = await fetch(`${API_BASE}/weather/locations/${id}?delete_logs=${deleteLogs}`, {
+    const res = await apiFetch(`${API_BASE}/weather/locations/${id}?delete_logs=${deleteLogs}`, {
       method: 'DELETE',
     });
     if (!res.ok) {
