@@ -64,3 +64,27 @@ def append_obsidian_note(path: str, content: str) -> str:
         return "Nota actualizada exitosamente"
     except Exception as e:
         return f"Error: {str(e)}"
+
+def list_obsidian_notes(directory: str = "") -> list[str]:
+    """Lista las notas (archivos .md) y carpetas dentro de la bóveda de Obsidian. Si directory está vacío, lista la raíz."""
+    if not os.path.exists(OBSIDIAN_MOUNT):
+        return ["Error: Bóveda no montada"]
+    
+    try:
+        target_path = get_full_path(directory) if directory else OBSIDIAN_MOUNT
+        if not os.path.exists(target_path):
+            return ["Error: Directorio no existe"]
+            
+        results = []
+        for item in os.listdir(target_path):
+            if item.startswith("."):
+                continue
+            item_path = os.path.join(target_path, item)
+            rel_path = os.path.relpath(item_path, OBSIDIAN_MOUNT)
+            if os.path.isdir(item_path):
+                results.append(f"[Carpeta] {rel_path}/")
+            elif item.endswith(".md"):
+                results.append(f"[Nota] {rel_path}")
+        return results
+    except Exception as e:
+        return [f"Error: {str(e)}"]

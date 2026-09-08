@@ -202,14 +202,64 @@ async def backfill_historical_weather(ctx, location_id: str, days_back: int):
     print("Backfill finalizado.")
 
 
+async def proactive_telegram_bot_task(ctx):
+    print("Iniciando tarea: Bot Proactivo...")
+    telegram_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    telegram_user_id = os.getenv("TELEGRAM_ALLOWED_USER_ID")
+    
+    if not telegram_token or not telegram_user_id:
+        print("Faltan credenciales de Telegram para el bot proactivo.")
+        return
+
+    # Usar Gemini para generar una pregunta amigable
+    from app.services.ai.gemini_provider import GeminiProvider
+    from app.models.ai_memory import AiThread
+    
+    # Necesitamos un thread_id. Podemos crear uno o usar uno hardcodeado.
+    # Para simplicidad, podemos usar la API de Telegram directamente con un prompt genérico,
+    # o mejor aún, usar genai directamente aquí.
+    from google import genai
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return
+        
+    client = genai.Client(api_key=api_key)
+    prompt = "Es de noche (21:00). Escribe un mensaje corto (máximo 2 oraciones) preguntándole a Fabrizio cómo estuvo su dieta hoy, cuántas calorías consumió, cuántos kilómetros corrió, y cómo está su humor."
+    
+    try:
+        response = client.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=prompt,
+        )
+        msg_text = response.text
+    except Exception as e:
+        print(f"Error generando mensaje proactivo: {e}")
+        msg_text = "¡Hola Fabrizio! Ya son las 21:00. ¿Cómo estuvo tu día? Contame sobre tu dieta, calorías, kilómetros y humor hoy."
+
+    # Enviar por Telegram
+    url = f"https://api.telegram.org/bot{telegram_token}/sendMessage"
+    payload = {
+        "chat_id": telegram_user_id,
+        "text": msg_text
+    }
+    
+    async with httpx.AsyncClient() as http_client:
+        try:
+            res = await http_client.post(url, json=payload)
+            print(f"Mensaje proactivo enviado: {res.status_code}")
+        except Exception as e:
+            print(f"Error enviando telegram: {e}")
+
+
 redis_host = os.getenv("REDIS_HOST", "redis")
 redis_port = int(os.getenv("REDIS_PORT", 6379))
 
 class WorkerSettings:
-    functions = [sync_daily_weather, backfill_historical_weather]
+    functions = [sync_daily_weather, backfill_historical_weather, proactive_telegram_bot_task]
     redis_settings = RedisSettings(host=redis_host, port=redis_port)
     
     from arq.cron import cron
     cron_jobs = [
-        cron(sync_daily_weather, minute=set(range(0, 60, 60))) # RUN HOURLY
+        cron(sync_daily_weather, minute=set(range(0, 60, 60))), # RUN HOURLY
+        cron(proactive_telegram_bot_task, hour=21, minute=0) # PROACTIVE BOT AT 21:00
     ]
